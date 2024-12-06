@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, UserPlus, PlusCircle } from 'lucide-react';
+import AttendanceSheet from '../../../components/studentAttancanceSheet';
 
 const ViewSubject = () => {
   const navigate = useNavigate()
@@ -15,7 +16,7 @@ const ViewSubject = () => {
   const { classID, subjectID } = params
 
   useEffect(() => {
-    dispatch(getSubjectDetails(subjectID, "Subject"));
+     (getSubjectDetails(subjectID, "Subject"));
     dispatch(getClassStudents(classID));
   }, [dispatch, subjectID, classID]);
 
@@ -97,6 +98,14 @@ const ViewSubject = () => {
     )
   }
 
+  const AttendanceSheetSection = () => {
+    return (
+      <AttendanceSheetContainer>
+        <AttendanceSheet/>
+      </AttendanceSheetContainer>
+    )
+  }
+
   if (subloading) {
     return <LoadingMessage>Loading...</LoadingMessage>
   }
@@ -106,6 +115,7 @@ const ViewSubject = () => {
       <TabContainer>
         <Tab active={activeTab === 'details'} onClick={() => handleTabChange('details')}>Details</Tab>
         <Tab active={activeTab === 'students'} onClick={() => handleTabChange('students')}>Students</Tab>
+        <Tab active={activeTab === 'attendance'} onClick={() => handleTabChange('attendance')}>Attendance Sheet</Tab>
       </TabContainer>
       <ContentContainer>
         <AnimatePresence mode="wait">
@@ -118,6 +128,7 @@ const ViewSubject = () => {
           >
             {activeTab === 'details' && <SubjectDetailsSection />}
             {activeTab === 'students' && <SubjectStudentsSection />}
+            {activeTab === 'attendance' && <AttendanceSheetSection />}
           </motion.div>
         </AnimatePresence>
       </ContentContainer>
@@ -242,7 +253,7 @@ const AttendanceButton = styled(ViewButton)`
   background-color: #FF6B6B;
 
   &:hover {
-background-color: #E85555;
+    background-color: #E85555;
   }
 `;
 
@@ -262,3 +273,11 @@ const LoadingMessage = styled.div`
   margin-top: 2rem;
 `;
 
+const AttendanceSheetContainer = styled.div`
+  color: white;
+
+  h2 {
+    color: #FF6B6B;
+    margin-bottom: 1rem;
+  }
+`;
