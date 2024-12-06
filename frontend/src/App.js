@@ -9,12 +9,9 @@ import LoginPage from './pages/LoginPage';
 import AdminRegisterPage from './pages/admin/AdminRegisterPage';
 import ChooseUser from './pages/ChooseUser';
 
-<<<<<<< HEAD
 import ParentCommunication from './pages/teacher/ParentCommunication';
 import ProgressReport from './pages/teacher/ProgressReport';
 
-=======
->>>>>>> c7bf637b2847ecdae0bebf3962bd1b69c26c6d2e
 const App = () => {
   const { currentRole } = useSelector(state => state.user);
 
