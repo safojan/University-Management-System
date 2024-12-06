@@ -5,6 +5,7 @@ const dotenv = require("dotenv")
 // const bodyParser = require("body-parser")
 const app = express()
 const Routes = require("./routes/route.js")
+<<<<<<< HEAD
 // Import existing routes
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
@@ -21,6 +22,8 @@ const syllabusRoutes = require('./routes/syllabusRoutes');
 const communicationRoutes = require('./routes/communicationRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 const quizAssessmentRoutes = require('./routes/quizAssessmentRoutes');
+=======
+>>>>>>> c7bf637b2847ecdae0bebf3962bd1b69c26c6d2e
 
 const PORT = 3000;
 
@@ -39,7 +42,11 @@ app.use(express.json({ limit: '10mb' }))
 app.use(cors())
 
 mongoose
+<<<<<<< HEAD
     .connect(process.env.MONGODB_URI)
+=======
+    .connect(process.env.MONGO_URL)
+>>>>>>> c7bf637b2847ecdae0bebf3962bd1b69c26c6d2e
     .then(console.log("Connected to MongoDB"))
     .catch((err) => console.log("NOT CONNECTED TO NETWORK", err))
 
@@ -47,6 +54,7 @@ mongoose
 
 
 app.use('/', Routes);
+<<<<<<< HEAD
 // Use existing routes
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/attendance', attendanceRoutes);
@@ -63,6 +71,8 @@ app.use('/api/communication', communicationRoutes);
 app.use('/api/quiz', quizRoutes);
 app.use('/api/quizAssessment', quizAssessmentRoutes);
 app.use('/api/grading', gradingRoutes);
+=======
+>>>>>>> c7bf637b2847ecdae0bebf3962bd1b69c26c6d2e
 
 
 
