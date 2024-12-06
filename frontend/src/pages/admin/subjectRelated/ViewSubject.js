@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getClassStudents, getSubjectDetails } from '../../../redux/sclassRelated/sclassHandle';
+import { getClassStudents, getSubjectDetails,getSubjectAttandanceForClass } from '../../../redux/sclassRelated/sclassHandle';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -18,6 +18,8 @@ const ViewSubject = () => {
   useEffect(() => {
      (getSubjectDetails(subjectID, "Subject"));
     dispatch(getClassStudents(classID));
+   dispatch(getSubjectAttandanceForClass(classID, subjectID));
+
   }, [dispatch, subjectID, classID]);
 
   const [activeTab, setActiveTab] = useState('details');

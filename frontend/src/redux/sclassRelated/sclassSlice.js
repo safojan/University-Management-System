@@ -11,6 +11,7 @@ const initialState = {
     error: null,
     response: null,
     getresponse: null,
+    sClassAttandance: [],
 };
 
 const sclassSlice = createSlice({
@@ -72,6 +73,19 @@ const sclassSlice = createSlice({
             state.subjectsList = [];
             state.sclassesList = [];
         },
+        getAttandanceSuccess: (state, action) => {
+            state.sClassAttandance = action.payload;
+            state.loading = false;
+            state.error = null;
+        },
+        getAttandanceFailed: (state, action) => {
+            state.sClassAttandance = [];
+            state.loading = false;
+            state.error = action.payload;
+        },
+        updateAttendance: (state, action) => {
+            state.sClassAttandance.attandance = action.payload;
+        }
     },
 });
 
@@ -86,7 +100,10 @@ export const {
     getFailedTwo,
     resetSubjects,
     getSubDetailsSuccess,
-    getSubDetailsRequest
+    getSubDetailsRequest,
+    getAttandanceSuccess,
+    getAttandanceFailed,
+    updateAttendance
 } = sclassSlice.actions;
 
 export const sclassReducer = sclassSlice.reducer;

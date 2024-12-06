@@ -9,7 +9,9 @@ import {
     getFailedTwo,
     getSubjectsSuccess,
     getSubDetailsSuccess,
-    getSubDetailsRequest
+    getSubDetailsRequest,
+    getAttandanceSuccess,
+    getAttandanceFailed,
 } from './sclassSlice';
 
 export const getAllSclasses = (id, address) => async (dispatch) => {
@@ -92,6 +94,38 @@ export const getSubjectDetails = (id, address) => async (dispatch) => {
         const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`);
         if (result.data) {
             dispatch(getSubDetailsSuccess(result.data));
+        }
+    } catch (error) {
+        dispatch(getError(error));
+    }
+}
+
+export const getSubjectAttandanceForClass = (classId, subjectId) => async (dispatch) => {
+    dispatch(getRequest());
+
+    try {
+        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/Sclass/Students/${classId}/${subjectId}`);
+        console.log(result);
+        if (result.data.message) {
+         dispatch(getAttandanceFailed(result.data.message)); 
+        } else {
+             dispatch(getAttandanceSuccess(result.data));
+        }
+    } catch (error) {
+        dispatch(getError(error));
+    }
+}
+
+export const markTodaysClassAttandance = (classId, subjectId, data) => async (dispatch) => {
+    dispatch(getRequest());
+
+    try {
+        const result = await axios.post(`${process.env.REACT_APP_BASE_URL}/Sclass/Students/${classId}/${subjectId}`, data);
+        if (result.data.message) {
+
+            dispatch(getFailed(result.data.message));
+        } else {
+            dispatch(getSubjectAttandanceForClass(classId, subjectId));
         }
     } catch (error) {
         dispatch(getError(error));
