@@ -25,6 +25,16 @@ const subjectSchema = new mongoose.Schema({
     teacher: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'teacher',
+    },
+    enrolledStudents: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'student' // Reference to the Student schema
+        }
+    ],
+    prerequisiteSubject: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'subject' // Reference to the prerequisite subject
     }
 }, { timestamps: true });
 
