@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getMaterials, deleteMaterial } from '../../../redux/materialRelated/materialActions';
-import Popup from '../../../components/Popup';
-import { underControl } from '../../../redux/materialRelated/materialSlice';
+import { getCourses as getMaterials, deleteCourse as deleteMaterial } from '../../redux/courseRelated/courseActions';
+import Popup from '../../components/Popup';
+import { underControl } from '../../redux/courseRelated/courseSlice';
+
 import { Plus, Trash2, Edit } from 'lucide-react';
 
 const MaterialList = () => {

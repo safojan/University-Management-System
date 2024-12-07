@@ -7,6 +7,9 @@ import { teacherReducer } from './teacherRelated/teacherSlice';
 import { complainReducer } from './complainRelated/complainSlice';
 import { communicationReducer } from './communicationRelated/communicationSlice';
 import { progressReportReducer } from './progressReportRelated/progressReportSlice';
+import {assignmentReducer } from './assignmentRelated/assignmentSlice';
+import { courseReducer } from './courseRelated/courseSlice';
+import { gradesReducer } from './gradesRelated/gradesSlice';
 
 
 const store = configureStore({
@@ -19,7 +22,10 @@ const store = configureStore({
         sclass: sclassReducer,
         communication: communicationReducer,
         progressReport: progressReportReducer,
-        sclass: sclassReducer
+        sclass: sclassReducer,
+        assignment: assignmentReducer,
+        course: courseReducer,
+        grades : gradesReducer
     },
 });
 

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { getClassFinalGrades, getStudentFinalGrades } from '../../../redux/gradesRelated/gradesActions';
-import Popup from '../../../components/Popup';
+import { getClassFinalGrades, getStudentFinalGrades } from '../../redux/gradesRelated/gradesActions';
+import Popup from '../../components/Popup';
+import { underControl } from '../../redux/gradesRelated/gradesSlice';
+
 
 const FinalGrades = () => {
   const dispatch = useDispatch();

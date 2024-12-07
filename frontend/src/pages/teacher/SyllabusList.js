@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getSyllabi, deleteSyllabus } from '../../../redux/syllabusRelated/syllabusActions';
-import Popup from '../../../components/Popup';
-import { underControl } from '../../../redux/syllabusRelated/syllabusSlice';
+import { getCourses as getSyllabi, deleteCourse as deleteSyllabus } from '../../redux/courseRelated/courseActions';
+import Popup from '../../components/Popup';
+import { underControl } from '../../redux/courseRelated/courseSlice';
 import { Plus, Trash2, Edit } from 'lucide-react';
 
 const SyllabusList = () => {

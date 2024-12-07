@@ -5,8 +5,12 @@ import styled from 'styled-components';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { getSchedules, createSchedule, updateSchedule, deleteSchedule } from '../../../redux/scheduleRelated/scheduleActions';
-import Popup from '../../../components/Popup';
+
+import { getCourses as getSchedules, 
+  createCourse as createSchedule, 
+  updateCourse as updateSchedule, 
+  deleteCourse as deleteSchedule } from '../../redux/courseRelated/courseActions';
+import Popup from '../../components/Popup';
 
 const localizer = momentLocalizer(moment);
 

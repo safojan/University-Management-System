@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getAssignments, deleteAssignment } from '../../../redux/assignmentRelated/assignmentActions';
-import Popup from '../../../components/Popup';
-import { underControl } from '../../../redux/assignmentRelated/assignmentSlice';
+
+// Updated import paths
+import Popup from '../../components/Popup';
+import { getAssignments, deleteAssignment } from '../../redux/gradesRelated/gradesActions';
+import { underControl } from '../../redux/courseRelated/courseSlice';
 import { Plus, Trash2, Edit } from 'lucide-react';
+
 
 const AssignmentList = () => {
   const dispatch = useDispatch();

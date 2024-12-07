@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { getClassStudents } from '../../../redux/sclassRelated/sclassHandle';
-import { trackAttendance } from '../../../redux/attendanceRelated/attendanceActions';
-import Popup from '../../../components/Popup';
-import { underControl } from '../../../redux/attendanceRelated/attendanceSlice';
+import { trackAttendance } from '../../redux/sclassRelated/sclassHandle';
+import Popup from '../../components/Popup';
+import { getClassStudents, markAttendance } from '../../redux/sclassRelated/sclassHandle';
+import { underControl } from '../../redux/sclassRelated/sclassSlice';
 
 const Attendance = () => {
   const dispatch = useDispatch();

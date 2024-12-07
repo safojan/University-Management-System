@@ -14,6 +14,21 @@ import {
     getAttandanceFailed,
 } from './sclassSlice';
 
+
+export const trackAttendance = (attendanceData) => async (dispatch) => {
+    dispatch(getRequest());
+    try {
+        const result = await axios.post(`${process.env.REACT_APP_BASE_URL}/attendance/track`, attendanceData);
+        if (result.data.message) {
+            dispatch(getFailed(result.data.message));
+        } else {
+            dispatch(getAttandanceSuccess(result.data));
+        }
+    } catch (error) {
+        dispatch(getError(error));
+    }
+};
+
 export const getAllSclasses = (id, address) => async (dispatch) => {
     dispatch(getRequest());
 
