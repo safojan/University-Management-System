@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const studentSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -54,7 +53,13 @@ const studentSchema = new mongoose.Schema({
             ref: 'subject',
             required: true
         }
-    }]
+    }],
+    registeredCourses: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'subject' // Reference to the Course schema
+        }
+    ]
 });
 
 module.exports = mongoose.model("student", studentSchema);

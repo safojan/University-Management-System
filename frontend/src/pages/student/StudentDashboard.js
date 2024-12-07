@@ -13,6 +13,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import StudentSideBar from './StudentSideBar';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import StudentHomePage from './StudentHomePage';
+import CourseRegistration from './CourseRegistration';
 import StudentProfile from './StudentProfile';
 import StudentSubjects from './StudentSubjects';
 import ViewStdAttendance from './ViewStdAttendance';
@@ -75,7 +76,7 @@ const StudentDashboard = () => {
                         <Route path='*' element={<Navigate to="/" />} />
                         <Route path="/Student/dashboard" element={<StudentHomePage />} />
                         <Route path="/Student/profile" element={<StudentProfile />} />
-
+                        <Route path="/Student/course-registration" element={<CourseRegistration />} />
                         <Route path="/Student/subjects" element={<StudentSubjects />} />
                         <Route path="/Student/attendance" element={<ViewStdAttendance />} />
                         <Route path="/Student/complain" element={<StudentComplain />} />
