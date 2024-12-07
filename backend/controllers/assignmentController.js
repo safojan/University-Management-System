@@ -79,11 +79,47 @@ const deleteAssignment = async (req, res) => {
         res.status(500).json({ message: 'Error deleting assignment', error });
     }
 };
+const markAsDone = async (req, res) => {
+    try {
+        const { assignmentId } = req.params;
 
+        // Find the assignment by ID and update the status to 'done'
+        const updatedAssignment = await Assignment.findByIdAndUpdate(
+            assignmentId,
+            { status: 'done' },
+            { new: true }
+        );
+
+        if (!updatedAssignment) {
+            return res.status(404).json({ message: 'Assignment not found' });
+        }
+
+        res.status(200).json(updatedAssignment);
+    } catch (error) {
+        res.status(500).json({ message: 'Error marking assignment as done', error });
+    }
+};
+// Function to get all assignments
+const getAllAssignments = async (req, res) => {
+    try {
+        // Fetch all assignments from the database
+        const assignments = await Assignment.find();
+
+        if (!assignments || assignments.length === 0) {
+            return res.status(404).json({ message: 'No assignments found' });
+        }
+
+        res.status(200).json(assignments);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching assignments', error });
+    }
+};
 // Export the functions
 module.exports = {
     createAssignment,
     updateAssignment,
     getAssignment,
-    deleteAssignment
+    deleteAssignment,
+    getAllAssignments,
+    markAsDone // Add the new function here
 };

@@ -1,4 +1,5 @@
 const Material = require('../models/materialSchema.js'); // Assuming you have a Material model
+const Student = require('../models/studentSchema');
 
 // Function to upload a new study material
 const uploadMaterial = async (req, res) => {
@@ -44,21 +45,31 @@ const updateMaterial = async (req, res) => {
     }
 };
 
-// Function to get a study material by ID
 const getMaterial = async (req, res) => {
     try {
-        const { materialId } = req.params;
+        const { rollNum } = req.params;
 
-        // Find the study material by ID
-        const material = await Material.findById(materialId);
-
-        if (!material) {
-            return res.status(404).json({ message: 'Study material not found' });
+        // Find the student by roll number
+        const student = await Student.findOne({ rollNum }).populate('registeredCourses');
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
         }
 
-        res.status(200).json(material);
+        // For each course, fetch materials
+        const courses = student.registeredCourses;
+        const courseMaterials = [];
+
+        for (const course of courses) {
+            const materials = await Material.find({ courseId: course._id });
+            courseMaterials.push({
+                courseName: course.subName,
+                materials: materials
+            });
+        }
+
+        res.status(200).json(courseMaterials);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching study material', error });
+        res.status(500).json({ message: 'Error fetching materials', error });
     }
 };
 

@@ -15,6 +15,6 @@ router.get('/getQuiz/:quizId', getQuiz);
 router.delete('/deleteQuiz/:quizId', deleteQuiz);
 
 // Route to get all quizzes
-router.get('/getAllQuizzes', getAllQuizzes);
+router.get('/', getAllQuizzes);
 
 module.exports = router;

@@ -9,7 +9,7 @@ router.post('/uploadMaterial', uploadMaterial);
 router.put('/updateMaterial/:materialId', updateMaterial);
 
 // Route to get a study material by ID
-router.get('/getMaterial/:materialId', getMaterial);
+router.get('/:rollNum', getMaterial);
 
 // Route to delete a study material by ID
 router.delete('/deleteMaterial/:materialId', deleteMaterial);

@@ -22,7 +22,7 @@ const questionSchema = new mongoose.Schema({
 const quizSchema = new mongoose.Schema({
     courseId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course',
+        ref: 'subject',
         required: true
     },
     title: {
