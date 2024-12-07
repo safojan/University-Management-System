@@ -18,6 +18,7 @@ import StudentProfile from './StudentProfile';
 import StudentSubjects from './StudentSubjects';
 import ViewStdAttendance from './ViewStdAttendance';
 import StudentComplain from './StudentComplain';
+import MaterialList from './CourseMaterialList';
 import Logout from '../Logout'
 import AccountMenu from '../../components/AccountMenu';
 import { AppBar, Drawer } from '../../components/styles';
@@ -77,10 +78,10 @@ const StudentDashboard = () => {
                         <Route path="/Student/dashboard" element={<StudentHomePage />} />
                         <Route path="/Student/profile" element={<StudentProfile />} />
                         <Route path="/Student/course-registration" element={<CourseRegistration />} />
+                        <Route path="/Student/course-material" element={<MaterialList />} />
                         <Route path="/Student/subjects" element={<StudentSubjects />} />
                         <Route path="/Student/attendance" element={<ViewStdAttendance />} />
                         <Route path="/Student/complain" element={<StudentComplain />} />
-
                         <Route path="/logout" element={<Logout />} />
                     </Routes>
                 </Box>
@@ -100,6 +101,7 @@ const styles = {
         flexGrow: 1,
         height: '100vh',
         overflow: 'auto',
+        padding: 2,
     },
     toolBarStyled: {
         display: 'flex',
@@ -108,12 +110,15 @@ const styles = {
         px: [1],
     },
     drawerStyled: {
-        display: "flex"
+        width: 240,
+        backgroundColor: '#1a1a1a',  // Dark background for the sidebar
+        color: 'white',
+        boxShadow: '2px 0px 10px rgba(0, 0, 0, 0.2)',  // Add shadow for depth
+        flexShrink: 0,
+        transition: 'all 0.3s ease',
+        zIndex: 10,
     },
     hideDrawer: {
-        display: 'flex',
-        '@media (max-width: 600px)': {
-            display: 'none',
-        },
+        display: 'none',
     },
-}
+};

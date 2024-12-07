@@ -39,6 +39,12 @@ const StudentSideBar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Course Registration" sx={{ color: 'black' }} />
                 </ListItemButton>
+                <ListItemButton component={Link} to="/Student/course-material">
+                    <ListItemIcon>
+                        <SchoolIcon sx={{ color: 'black' }} color={location.pathname.startsWith("/Student/course-material") ? 'primary' : 'inherit'} />
+                    </ListItemIcon>
+                    <ListItemText primary="Course Material" sx={{ color: 'black' }} />
+                </ListItemButton>
                 <ListItemButton component={Link} to="/Student/complain">
                     <ListItemIcon>
                         <AnnouncementOutlinedIcon sx={{ color: 'black' }} color={location.pathname.startsWith("/Student/complain") ? 'primary' : 'inherit'} />

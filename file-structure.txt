@@ -114,6 +114,11 @@ University-Management-System/
 │   │   │   │   │   ├── ShowTeachers.js
 │   │   │   │   │   ├── TeacherDetails.js
 │   │   │   ├── student/
+|   |   |   |   ├── CourseRegistration.js
+|   |   |   |   ├── StudentComplain.js
+|   |   |   |   ├── StudentProfile.js
+|   |   |   |   ├── StudentSideBar.js
+|   |   |   |   ├── ViewStudentAttendence.js
 │   │   │   │   ├── StudentDashboard.js
 │   │   │   │   ├── StudentHomePage.js
 │   │   │   │   ├── StudentSubjects.js

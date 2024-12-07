@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const materialSchema = new mongoose.Schema({
     courseId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course',
+        ref: 'subject',
         required: true
     },
     title: {
@@ -17,7 +17,12 @@ const materialSchema = new mongoose.Schema({
     fileUrl: {
         type: String,
         required: true
+    },
+    uploadDate: {
+         type: Date,
+          default: Date.now
     }
+
 });
 
 module.exports = mongoose.model('Material', materialSchema);
