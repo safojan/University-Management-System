@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Search, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
 import Popup from '../../components/Popup';
+import { Link } from 'react-router-dom';
 
 const MaterialList = () => {
     const [rollNum, setRollNum] = useState('');
@@ -54,6 +55,22 @@ const MaterialList = () => {
                     </ButtonContainer>
                 </Form>
             </Card>
+
+            {/* Updated Buttons for Quizzes and Assignments */}
+            <ButtonContainer>
+                <QuizButton
+                    as={Link}
+                    to="/Student/quizzes"
+                >
+                    Quizzes
+                </QuizButton>
+                <QuizButton
+                    as={Link}
+                    to="/Student/assignments"
+                >
+                    Assignments
+                </QuizButton>
+            </ButtonContainer>
 
             {/* Display courses and their materials */}
             {courseMaterials.length > 0 && (
@@ -145,6 +162,9 @@ const Input = styled.input`
 const ButtonContainer = styled.div`
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
 `;
 
 const FetchButton = styled(motion.button)`
@@ -155,9 +175,6 @@ const FetchButton = styled(motion.button)`
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     transition: background-color 0.3s ease;
 
     &:hover {
@@ -167,6 +184,31 @@ const FetchButton = styled(motion.button)`
     &:disabled {
         background-color: #F08080AA;
         cursor: not-allowed;
+    }
+`;
+
+// Updated Quiz Button styled component
+const QuizButton = styled(motion.button)`
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #4CAF50, #3A9D46);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: linear-gradient(135deg, #3A9D46, #2E8C3A);
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(1px);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
     }
 `;
 
@@ -189,23 +231,17 @@ const CourseCard = styled.div`
     border-radius: 12px;
     color: white;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
 `;
 
 const MaterialCard = styled.div`
     background-color: rgba(45, 43, 63, 0.8);
     padding: 1rem;
     border-radius: 12px;
-    color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: white;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
-
-    &:hover {
-        background-color: rgba(45, 43, 63, 0.9);
-    }
 `;
 
 const MaterialInfo = styled.div`
@@ -223,7 +259,6 @@ const DownloadButton = styled.a`
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    cursor: pointer;
     transition: background-color 0.3s ease;
 
     &:hover {

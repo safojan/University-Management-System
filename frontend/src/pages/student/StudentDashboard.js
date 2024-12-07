@@ -16,8 +16,10 @@ import StudentHomePage from './StudentHomePage';
 import CourseRegistration from './CourseRegistration';
 import StudentProfile from './StudentProfile';
 import StudentSubjects from './StudentSubjects';
+import QuizPage from './QuizPage';
 import ViewStdAttendance from './ViewStdAttendance';
 import StudentComplain from './StudentComplain';
+import AssignmentPage from './AssignmentPage';
 import MaterialList from './CourseMaterialList';
 import Logout from '../Logout'
 import AccountMenu from '../../components/AccountMenu';
@@ -79,6 +81,8 @@ const StudentDashboard = () => {
                         <Route path="/Student/profile" element={<StudentProfile />} />
                         <Route path="/Student/course-registration" element={<CourseRegistration />} />
                         <Route path="/Student/course-material" element={<MaterialList />} />
+                        <Route path="/Student/assignments" element={<AssignmentPage />} />
+                        <Route path="/Student/quizzes" element={<QuizPage />} />
                         <Route path="/Student/subjects" element={<StudentSubjects />} />
                         <Route path="/Student/attendance" element={<ViewStdAttendance />} />
                         <Route path="/Student/complain" element={<StudentComplain />} />
@@ -90,7 +94,7 @@ const StudentDashboard = () => {
     );
 }
 
-export default StudentDashboard
+export default StudentDashboard;
 
 const styles = {
     boxStyled: {
@@ -111,9 +115,9 @@ const styles = {
     },
     drawerStyled: {
         width: 240,
-        backgroundColor: '#1a1a1a',  // Dark background for the sidebar
-        color: 'white',
-        boxShadow: '2px 0px 10px rgba(0, 0, 0, 0.2)',  // Add shadow for depth
+        backgroundColor: 'black',  // Pink background for the sidebar
+        color: 'red',
+        boxShadow: '2px 0px 10px rgba(0, 0, 0, 0.2)',  // Optional shadow for depth
         flexShrink: 0,
         transition: 'all 0.3s ease',
         zIndex: 10,

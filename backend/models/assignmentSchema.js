@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const assignmentSchema = new mongoose.Schema({
     courseId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course',
+        ref: 'subject',
         required: true
     },
     title: {
@@ -17,6 +17,11 @@ const assignmentSchema = new mongoose.Schema({
     dueDate: {
         type: Date,
         required: true
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'done'],
+        default: 'pending'
     }
 });
 
