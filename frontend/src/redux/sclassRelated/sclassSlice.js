@@ -82,9 +82,6 @@ const sclassSlice = createSlice({
             state.sClassAttandance = [];
             state.loading = false;
             state.error = action.payload;
-        },
-        updateAttendance: (state, action) => {
-            state.sClassAttandance.attandance = action.payload;
         }
     },
 });
@@ -103,7 +100,6 @@ export const {
     getSubDetailsRequest,
     getAttandanceSuccess,
     getAttandanceFailed,
-    updateAttendance
 } = sclassSlice.actions;
 
 export const sclassReducer = sclassSlice.reducer;

@@ -104,7 +104,7 @@ export const getSubjectAttandanceForClass = (classId, subjectId) => async (dispa
     dispatch(getRequest());
 
     try {
-        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/Sclass/Students/${classId}/${subjectId}`);
+        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/Sclass/Students/attandance/${classId}/${subjectId}`);
         console.log(result);
         if (result.data.message) {
          dispatch(getAttandanceFailed(result.data.message)); 
@@ -120,7 +120,7 @@ export const markTodaysClassAttandance = (classId, subjectId, data) => async (di
     dispatch(getRequest());
 
     try {
-        const result = await axios.post(`${process.env.REACT_APP_BASE_URL}/Sclass/Students/${classId}/${subjectId}`, data);
+        const result = await axios.post(`${process.env.REACT_APP_BASE_URL}/Sclass/Students/attandance/${classId}/${subjectId}`, data);
         if (result.data.message) {
 
             dispatch(getFailed(result.data.message));
