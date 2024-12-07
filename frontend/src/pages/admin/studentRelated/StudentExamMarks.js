@@ -61,6 +61,8 @@ const StudentExamMarks = ({ situation }) => {
     useEffect(() => {
         if (marksFromStore?.marks) {
             setMarksList(marksFromStore.marks);
+        } else {
+            setMarksList([]);
         }
     }, [marksFromStore]);
 
@@ -134,9 +136,9 @@ const StudentExamMarks = ({ situation }) => {
     useEffect(() => {
         if (response || error || statestatus === "added") {
             setIsSubmitting(false);
-            setSnackbar({ 
-                open: true, 
-                message: response || error || "Marks updated successfully", 
+            setSnackbar({
+                open: true,
+                message: response || error?.message || "Marks updated successfully",
                 severity: error ? 'error' : 'success'
             });
         }
@@ -181,56 +183,56 @@ const StudentExamMarks = ({ situation }) => {
                             </FormControl>
                         )}
 
-                        <TableContainer  sx={{ mt: 3, mb: 3, border: '1px solid #ccc', borderRadius: '4px' }}>
-                            <Table>
-                                <TableHead
-                                sx={{ backgroundColor: theme.palette.primary.main, color: 'white' }}
-                                >
-                                    <TableRow>
-                                        <TableCell>Activity</TableCell>
-                                        <TableCell>Score</TableCell>
-                                        <TableCell>Total Score</TableCell>
-                                        <TableCell>Action</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody
-                                >
-                                    {marksList.map((mark, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell>
-                                                <TextField 
-                                                    value={mark.activity}
-                                                    onChange={(e) => updateActivity(index, 'activity', e.target.value)}
-                                                    fullWidth
-            
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <TextField 
-                                                    type="number"
-                                                    value={mark.score}
-                                                    onChange={(e) => updateActivity(index, 'score', parseInt(e.target.value))}
-                                                    fullWidth
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <TextField 
-                                                    type="number"
-                                                    value={mark.totalScore}
-                                                    onChange={(e) => updateActivity(index, 'totalScore', parseInt(e.target.value))}
-                                                    fullWidth
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <IconButton onClick={() => deleteActivity(index)} color="error">
-                                                    <Trash2 />
-                                                </IconButton>
-                                            </TableCell>
+                        {marksList.length > 0 && (
+                            <TableContainer sx={{ mt: 3, mb: 3, border: '1px solid #ccc', borderRadius: '4px' }}>
+                                <Table>
+                                    <TableHead
+                                        sx={{ backgroundColor: theme.palette.primary.main, color: 'white' }}
+                                    >
+                                        <TableRow>
+                                            <TableCell>Activity</TableCell>
+                                            <TableCell>Score</TableCell>
+                                            <TableCell>Total Score</TableCell>
+                                            <TableCell>Action</TableCell>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                                    </TableHead>
+                                    <TableBody>
+                                        {marksList.map((mark, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>
+                                                    <TextField
+                                                        value={mark.activity}
+                                                        onChange={(e) => updateActivity(index, 'activity', e.target.value)}
+                                                        fullWidth
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <TextField
+                                                        type="number"
+                                                        value={mark.score}
+                                                        onChange={(e) => updateActivity(index, 'score', parseInt(e.target.value))}
+                                                        fullWidth
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <TextField
+                                                        type="number"
+                                                        value={mark.totalScore}
+                                                        onChange={(e) => updateActivity(index, 'totalScore', parseInt(e.target.value))}
+                                                        fullWidth
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <IconButton onClick={() => deleteActivity(index)} color="error">
+                                                        <Trash2 />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        )}
 
                         <Box display="flex" gap={2} mb={3}>
                             <TextField
@@ -256,8 +258,7 @@ const StudentExamMarks = ({ situation }) => {
                                 fullWidth
                                 sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#ccc' } } }}
                             />
-                            <Button variant="outlined" onClick={addActivity} startIcon={<Plus />}/>
-                  
+                            <Button variant="outlined" onClick={addActivity} startIcon={<Plus />} />
                         </Box>
 
                         <Button
@@ -286,4 +287,3 @@ const StudentExamMarks = ({ situation }) => {
 };
 
 export default StudentExamMarks;
-
