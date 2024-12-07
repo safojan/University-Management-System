@@ -4,7 +4,7 @@ const router = require('express').Router();
 
 const { adminRegister, adminLogIn, getAdminDetail} = require('../controllers/admin-controller.js');
 
-const { sclassCreate, sclassList, deleteSclass, deleteSclasses, getSclassDetail, getSclassStudents } = require('../controllers/class-controller.js');
+const { sclassCreate, sclassList, deleteSclass, deleteSclasses, getSclassDetail, getSclassStudents,sGetClassSubjectAttendance,TodaysClassAttandance } = require('../controllers/class-controller.js');
 const { complainCreate, complainList } = require('../controllers/complain-controller.js');
 const { noticeCreate, noticeList, deleteNotices, deleteNotice, updateNotice } = require('../controllers/notice-controller.js');
 const {
@@ -18,6 +18,7 @@ const {
     studentAttendance,
     deleteStudentsByClass,
     updateExamResult,
+    getStudentMarksForSubject,
     clearAllStudentsAttendanceBySubject,
     clearAllStudentsAttendance,
     removeStudentAttendanceBySubject,
@@ -103,6 +104,17 @@ router.get("/Sclass/Students/:id", getSclassStudents)
 router.delete("/Sclasses/:id", deleteSclasses)
 router.delete("/Sclass/:id", deleteSclass)
 
+
+router.get("/Sclass/Students/attandance/:classId/:subjectId", sGetClassSubjectAttendance)
+router.post("/Sclass/Students/attandance/:classId/:subjectId", TodaysClassAttandance)
+
+//update attance of a student for an class 
+router.get("/Sclass/Students/marks/:studentId/:subjectId", getStudentMarksForSubject);
+router.post("/Sclass/Students/marks/:studentId/:subjectId", updateExamResult)
+
+
+
+
 // Subject
 
 router.post('/SubjectCreate', subjectCreate);
@@ -115,5 +127,8 @@ router.get("/Subject/:id", getSubjectDetail)
 router.delete("/Subject/:id", deleteSubject)
 router.delete("/Subjects/:id", deleteSubjects)
 router.delete("/SubjectsClass/:id", deleteSubjectsByClass)
+
+
+
 
 module.exports = router;

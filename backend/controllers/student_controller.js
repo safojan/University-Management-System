@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const Student = require('../models/studentSchema.js');
 const Subject = require('../models/subjectSchema.js');
+const Marks = require('../models/marksSchema.js'); // Add this line to import the Marks model
 
 const studentRegister = async (req, res) => {
     try {
@@ -144,29 +145,86 @@ const updateStudent = async (req, res) => {
 }
 
 const updateExamResult = async (req, res) => {
-    const { subName, marksObtained } = req.body;
-
     try {
-        const student = await Student.findById(req.params.id);
+        const { studentId, subjectId } = req.params;
+        const { marks } = req.body;
 
+        // Calculate totalMarks as the sum of scores of all activities
+        const totalMarks = marks.reduce((total, mark) => total + mark.score, 0);
+
+        // Find the student
+        const student = await Student.findById(studentId);
         if (!student) {
-            return res.send({ message: 'Student not found' });
+            return res.status(404).json({ message: 'Student not found' });
         }
 
-        const existingResult = student.examResult.find(
-            (result) => result.subName.toString() === subName
+        // Check if the subject already has marks
+        const existingMarkIndex = student.examResult.findIndex(
+            exam => exam.subName.toString() === subjectId
         );
 
-        if (existingResult) {
-            existingResult.marksObtained = marksObtained;
+        if (existingMarkIndex !== -1) {
+            // Update the existing marks
+            const existingMarksId = student.examResult[existingMarkIndex].marks;
+            const existingMarks = await Marks.findById(existingMarksId);
+
+            if (existingMarks) {
+                existingMarks.marks = marks;
+                existingMarks.totalMarks = totalMarks;
+                await existingMarks.save();
+            }
         } else {
-            student.examResult.push({ subName, marksObtained });
+            // Create a new marks document
+            const newMarks = new Marks({
+                marks,
+                totalMarks
+            });
+
+            // Save the new marks document
+            const savedMarks = await newMarks.save();
+
+            // Add the new marks reference to the student's examResult
+            student.examResult.push({
+                subName: subjectId,
+                marks: savedMarks._id
+            });
         }
 
-        const result = await student.save();
-        return res.send(result);
+        await student.save();
+
+        res.status(200).json({ message: 'Exam result updated successfully', student });
     } catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getStudentMarksForSubject = async (req, res) => {
+    try {
+        const { studentId, subjectId } = req.params;
+
+        // Find the student
+        const student = await Student.findById(studentId).populate({
+            path: 'examResult.marks',
+            model: 'Marks'
+        });
+
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        // Find the exam result for the specific subject
+        const examResult = student.examResult.find(
+            exam => exam.subName.toString() === subjectId
+        );
+
+        if (!examResult) {
+            return res.status(404).json({ message: 'Subject not found in student\'s exam results' });
+        }
+
+        // Return the marks for the specific subject
+        res.status(200).json({ marks: examResult.marks.marks });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -283,7 +341,7 @@ module.exports = {
     studentAttendance,
     deleteStudentsByClass,
     updateExamResult,
-
+    getStudentMarksForSubject,
     clearAllStudentsAttendanceBySubject,
     clearAllStudentsAttendance,
     removeStudentAttendanceBySubject,

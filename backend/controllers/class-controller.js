@@ -102,4 +102,129 @@ const deleteSclasses = async (req, res) => {
 }
 
 
-module.exports = { sclassCreate, sclassList, deleteSclass, deleteSclasses, getSclassDetail, getSclassStudents };
+const sGetClassSubjectAttendance = async (req, res) => {
+    try {
+        // Get class ID and subject ID from the request parameters
+        const { classId, subjectId } = req.params;
+
+        // Find the class by ID to ensure the class exists
+        const sclass = await Sclass.findById(classId);
+        if (!sclass) {
+            return res.status(404).json({ message: 'Class not found' });
+        }
+
+        // Find the subject by ID to ensure the subject exists
+        const subject = await Subject.findById(subjectId).populate('sclassName', 'sclassName').exec();
+        if (!subject) {
+            return res.status(404).json({ message: 'Subject not found' });
+        }
+
+        // Find all students in the class and filter attendance records for the specific subject
+        const students = await Student.find({ sclassName: classId })
+            .populate('attendance.subName', 'subName')
+            .exec();
+
+        // Filter attendance data for the specific subject
+        const attendanceData = students.map(student => {
+            const filteredAttendance = student.attendance.filter(record => {
+                // Filter by subject
+                return record.subName && record.subName._id.toString() === subjectId;
+            });
+
+            return {
+                studentName: student.name,
+                rollNum: student.rollNum,
+                attendance: filteredAttendance.map(record => ({
+                    date: record.date,
+                    status: record.status,
+                    subject: record.subName ? record.subName.subName : 'Unknown'
+                }))
+            };
+        });
+
+        // Send the attendance data in response
+        return res.status(200).json({
+            className: sclass.sclassName,
+            subject: subject.subName,
+            attendanceData
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+const TodaysClassAttandance = async (req, res) => {
+    try {
+        const { classId, subjectId } = req.params;
+        const attendanceData = req.body;
+
+        // Find the class by ID to ensure the class exists
+        const sclass = await Sclass.findById(classId);
+        if (!sclass) {
+            return res.status(404).json({ message: 'Class not found' });
+        }
+
+        // Find the subject by ID to ensure the subject exists
+        const subject = await Subject.findById(subjectId);
+        if (!subject) {
+            return res.status(404).json({ message: 'Subject not found' });
+        }
+
+        // Find all students in the class
+        const students = await Student.find({ sclassName: classId });
+
+        // Update attendance for each student
+        for (const student of students) {
+            const rollNum = student.rollNum.toString();
+           
+            if (attendanceData.hasOwnProperty(rollNum)) {
+                const status = attendanceData[rollNum];
+                const date = new Date().toISOString().split('T')[0]; // Get only the date part
+
+                const existingAttendance = student.attendance.find(
+                    (a) =>
+                        a.date.toISOString().split('T')[0] === date &&
+                        a.subName.toString() === subjectId
+                );
+
+                if (existingAttendance) {
+                    existingAttendance.status = status;
+                } else {
+                    student.attendance.push({ date, status, subName: subjectId });
+                }
+            }
+            await student.save();
+        }
+
+        // Send the updated attendance data back in response
+        const updatedStudents = await Student.find({ sclassName: classId })
+            .populate('attendance.subName', 'subName')
+            .exec();
+
+        const updatedAttendanceData = updatedStudents.map(student => {
+            const filteredAttendance = student.attendance.filter(record => {
+                return record.subName && record.subName._id.toString() === subjectId;
+            });
+
+            return {
+                studentName: student.name,
+                rollNum: student.rollNum,
+                attendance: filteredAttendance.map(record => ({
+                    date: record.date,
+                    status: record.status,
+                    subject: record.subName ? record.subName.subName : 'Unknown'
+                }))
+            };
+        });
+
+        return res.status(200).json({
+            updatedAttendanceData
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+
+module.exports = { sclassCreate, sclassList, deleteSclass, deleteSclasses, getSclassDetail, getSclassStudents,sGetClassSubjectAttendance ,TodaysClassAttandance};

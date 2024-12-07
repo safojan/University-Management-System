@@ -6,6 +6,7 @@ const initialState = {
     error: null,
     response: null,
     statestatus: "idle",
+    marks : null
 };
 
 const studentSlice = createSlice({
@@ -41,6 +42,12 @@ const studentSlice = createSlice({
             state.response = null;
             state.error = null;
             state.statestatus = "idle";
+        },
+        marksSuccess: (state, action) => {
+            state.marks = action.payload;
+            state.loading = false;
+            state.error = null;
+            state.response = null
         }
     },
 });
@@ -52,6 +59,7 @@ export const {
     getError,
     underStudentControl,
     stuffDone,
+    marksSuccess
 } = studentSlice.actions;
 
 export const studentReducer = studentSlice.reducer;
