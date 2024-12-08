@@ -30,8 +30,7 @@ const noticeCreate = async (req, res) => {
         // Send email
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log(error);
-                return ;
+                return console.log(error);
             }
             console.log('Email sent: ' + info.response);
         });

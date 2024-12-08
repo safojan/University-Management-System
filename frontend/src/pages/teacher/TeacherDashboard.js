@@ -31,6 +31,10 @@ import FinalGrades from './FinalGrades';
 import ProgressReport from './ProgressReport';
 import ParentCommunication from './ParentCommunication';
 
+import ViewStudent from '../admin/studentRelated/ViewStudent';
+
+import ViewCourse from './Courseview';
+
 const DarkMainContent = styled(Box)(({ theme }) => ({
   display: 'flex',
   backgroundColor: theme.palette.background.default,
@@ -162,7 +166,17 @@ const TeacherDashboard = () => {
           <Route path="/" element={<TeacherHomePage />} />
           <Route path="/Teacher/dashboard" element={<TeacherHomePage />} />
           <Route path="/Teacher/profile" element={<TeacherProfile />} />
+
+
+
           <Route path="/Teacher/courses" element={<CourseList />} />
+          <Route path="/Teacher/subjects/:classID/:subjectID" element={<ViewCourse/>} />
+          
+
+
+          <Route path="/Teacher/students/student/:id" element={<ViewStudent />} />
+
+
           <Route path="/Teacher/syllabus" element={<SyllabusList />} />
           <Route path="/Teacher/schedule" element={<Schedule />} />
           <Route path="/Teacher/materials" element={<MaterialList />} />

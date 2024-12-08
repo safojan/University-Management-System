@@ -2,92 +2,130 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
-// Updated import paths
+import { motion, AnimatePresence } from 'framer-motion';
+import { getCourses } from '../../redux/courseRelated/courseActions';
+import { Trash2, Eye } from 'lucide-react';
 import Popup from '../../components/Popup';
-import { getCourses, deleteCourse } from '../../redux/courseRelated/courseActions';
-import { underControl } from '../../redux/courseRelated/courseSlice';
 
-import { Plus, Trash2, Edit } from 'lucide-react';
-
-
+// CourseList Component
 const CourseList = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  // Accessing state from Redux store
+  const { courses, loading, error } = useSelector((state) => state.course || {});
+  const { currentUser } = useSelector((state) => state.user);
 
-  const { courses, loading, error, status, response } = useSelector(state => state.course);
-
-  const [message, setMessage] = useState('');
+  // Local state for Popup
   const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    dispatch(getCourses());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (status === 'deleted') {
-      dispatch(underControl());
-      setMessage('Course deleted successfully');
-      setShowPopup(true);
-    } else if (status === 'failed' || status === 'error') {
-      setMessage(response || 'Network Error');
-      setShowPopup(true);
+    // Only dispatch getCourses if currentUser._id exists
+    if (currentUser && currentUser._id) {
+      dispatch(getCourses(currentUser._id));
     }
-  }, [status, response, dispatch]);
+  }, [currentUser, dispatch]);
 
-  const deleteHandler = (courseId) => {
-    if (window.confirm('Are you sure you want to delete this course?')) {
-      dispatch(deleteCourse(courseId));
+  const deleteHandler = (deleteID, address) => {
+    setMessage("Sorry, the delete function has been disabled for now.");
+    setShowPopup(true);
+  };
+
+  const SubjectCard = ({ subject }) => (
+    <Card
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+    >
+      <SubjectName>{subject.subName || 'Unnamed Subject'}</SubjectName>
+      <SubjectDetails>
+        <div><strong>Code:</strong> {subject.subCode || 'N/A'}</div>
+        <div><strong>Sessions:</strong> {subject.sessions || 'N/A'}</div>
+        <div><strong>Created At:</strong> {new Date(subject.createdAt).toLocaleDateString() || 'N/A'}</div>
+        <div><strong>Updated At:</strong> {new Date(subject.updatedAt).toLocaleDateString() || 'N/A'}</div>
+        <div><strong>Teacher:</strong> { currentUser.name|| 'N/A'}</div>
+      </SubjectDetails>
+      <FullWidthButtonGroup>
+        <FullWidthViewButton 
+          onClick={() => navigate(`/Teacher/subjects/${subject.sclassName}/${subject._id}`)}
+        >
+          <Eye size={20} />
+          View
+        </FullWidthViewButton>
+      </FullWidthButtonGroup>
+    </Card>
+  );
+
+const FullWidthButtonGroup = styled(ButtonGroup)`
+  justify-content: center;
+  margin-top: auto;
+`;
+
+const FullWidthViewButton = styled(ViewButton)`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+  // Function to render content based on loading, error, or courses state
+  const renderContent = () => {
+    if (loading) {
+      return <LoadingMessage>Loading subjects...</LoadingMessage>;
     }
+
+    if (error) {
+      return <ErrorMessage>Error: {error}</ErrorMessage>;
+    }
+
+    if (!courses || courses.length === 0) {
+      return (
+        <Message>
+          No subjects found. 
+          {currentUser ? ' Add a new subject to get started.' : ' Please log in.'}
+        </Message>
+      );
+    }
+
+    return (
+      <SubjectsGrid>
+        <AnimatePresence>
+          {courses.map((subject) => (
+            <SubjectCard 
+              key={subject._id} 
+              subject={subject} 
+            />
+          ))}
+        </AnimatePresence>
+      </SubjectsGrid>
+    );
   };
 
   return (
     <Container>
       <Header>
-        <h2>Courses</h2>
-        <AddButton onClick={() => navigate('/teacher/addcourse')}>
-          <Plus size={20} />
-          Add Course
-        </AddButton>
+        <h2>My Subjects</h2>
       </Header>
-      {loading ? (
-        <LoadingMessage>Loading...</LoadingMessage>
-      ) : error ? (
-        <ErrorMessage>{error}</ErrorMessage>
-      ) : (
-        <CourseGrid>
-          {courses.map((course) => (
-            <CourseCard key={course._id}>
-              <CourseName>{course.courseName}</CourseName>
-              <CourseDetails>
-                <span>Code: {course.courseCode}</span>
-                <span>Syllabus: {course.syllabus}</span>
-                <span>Schedule: {course.schedule}</span>
-              </CourseDetails>
-              <ButtonGroup>
-                <EditButton onClick={() => navigate(`/teacher/editcourse/${course._id}`)}>
-                  <Edit size={20} />
-                  Edit
-                </EditButton>
-                <DeleteButton onClick={() => deleteHandler(course._id)}>
-                  <Trash2 size={20} />
-                  Delete
-                </DeleteButton>
-              </ButtonGroup>
-            </CourseCard>
-          ))}
-        </CourseGrid>
-      )}
-      <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
+
+      {renderContent()}
+
+      {/* Display Popup */}
+      <Popup 
+        message={message} 
+        setShowPopup={setShowPopup} 
+        showPopup={showPopup} 
+      />
     </Container>
   );
 };
 
-export default CourseList;
-
+// Styled Components
 const Container = styled.div`
   padding: 2rem;
-  background-color: #f4f4f9;
+  background-color: #2F2E41;
   min-height: 100vh;
 `;
 
@@ -98,107 +136,69 @@ const Header = styled.div`
   margin-bottom: 2rem;
 
   h2 {
-    color: #333;
+    color: #FF6B6B;
     font-size: 1.5rem;
   }
 `;
 
-const AddButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #4ECDC4;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #45B7AA;
-  }
-`;
-
-const LoadingMessage = styled.div`
-  color: #333;
-  font-size: 1.2rem;
-  text-align: center;
-  margin-top: 2rem;
-`;
-
-const ErrorMessage = styled.div`
-  color: red;
-  font-size: 1.2rem;
-  text-align: center;
-  margin-top: 2rem;
-`;
-
-const CourseGrid = styled.div`
+const SubjectsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
 `;
 
-const CourseCard = styled.div`
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+const Card = styled(motion.div)`
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  color #333;
 `;
 
-const CourseName = styled.h3`
-  color: #FF6B6B;
-  margin-bottom: 1rem;
+const SubjectName = styled.h3`
+  font-size: 1.2rem;
+  margin: 0;
 `;
 
-const CourseDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  color: #333;
-  margin-bottom: 1rem;
-
-  span {
-    margin-bottom: 0.5rem;
-  }
+const SubjectDetails = styled.div`
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
+  justify-content: space-between;
 `;
 
-const EditButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #4ECDC4;
-  color: white;
+const IconButton = styled.button`
+  background: transparent;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #45B7AA;
-  }
 `;
 
-const DeleteButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+const ViewButton = styled.button`
   background-color: #FF6B6B;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #E63946;
-  }
 `;
+
+const LoadingMessage = styled.div`
+  text-align: center;
+  font-size: 1.2rem;
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  font-size: 1.2rem;
+`;
+
+const Message = styled.div`
+  text-align: center;
+  font-size: 1.2rem;
+`;
+
+export default CourseList;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUserDetails, updateUser } from '../../../redux/userRelated/userHandle';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom';
 import { getSubjectList } from '../../../redux/sclassRelated/sclassHandle';
 import { Box, Button, Collapse, IconButton, Table, TableBody, TableHead, Typography, Tab, Paper, BottomNavigation, BottomNavigationAction, Container } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
@@ -10,30 +10,32 @@ import TabPanel from '@mui/lab/TabPanel';
 import { KeyboardArrowUp, KeyboardArrowDown, Delete as DeleteIcon } from '@mui/icons-material';
 import { removeStuff, updateStudentFields } from '../../../redux/studentRelated/studentHandle';
 import { calculateOverallAttendancePercentage, calculateSubjectAttendancePercentage, groupAttendanceBySubject } from '../../../components/attendanceCalculator';
-import CustomBarChart from '../../../components/CustomBarChart'
-import CustomPieChart from '../../../components/CustomPieChart'
+import CustomBarChart from '../../../components/CustomBarChart';
+import CustomPieChart from '../../../components/CustomPieChart';
 import { StyledTableCell, StyledTableRow } from '../../../components/styles';
-
 import InsertChartIcon from '@mui/icons-material/InsertChart';
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 import Popup from '../../../components/Popup';
+import  StudentExamMarksTeacher from '../../teacher/StudentExamMarksTeacher'
 
 const ViewStudent = () => {
     const [showTab, setShowTab] = useState(false);
+    const currentUser = useSelector((state) => state.user.currentUser);
+    const { role } = currentUser;
 
-    const navigate = useNavigate()
-    const params = useParams()
-    const dispatch = useDispatch()
+    const navigate = useNavigate();
+    const params = useParams();
+    const dispatch = useDispatch();
     const { userDetails, response, loading, error } = useSelector((state) => state.user);
 
-    const studentID = params.id
-    const address = "Student"
+    const studentID = params.id;
+    const address = "Student";
 
     useEffect(() => {
         dispatch(getUserDetails(studentID, address));
-    }, [dispatch, studentID])
+    }, [dispatch, studentID]);
 
     useEffect(() => {
         if (userDetails && userDetails.sclassName && userDetails.sclassName._id !== undefined) {
@@ -41,8 +43,8 @@ const ViewStudent = () => {
         }
     }, [dispatch, userDetails]);
 
-    if (response) { console.log(response) }
-    else if (error) { console.log(error) }
+    if (response) { console.log(response); }
+    else if (error) { console.log(error); }
 
     const [name, setName] = useState('');
     const [rollNum, setRollNum] = useState('');
@@ -53,7 +55,6 @@ const ViewStudent = () => {
     const [subjectAttendance, setSubjectAttendance] = useState([]);
 
     const [openStates, setOpenStates] = useState({});
-
     const [showPopup, setShowPopup] = useState(false);
     const [message, setMessage] = useState("");
 
@@ -75,9 +76,7 @@ const ViewStudent = () => {
         setSelectedSection(newSection);
     };
 
-    const fields = password === ""
-        ? { name, rollNum }
-        : { name, rollNum, password }
+    const fields = password === "" ? { name, rollNum } : { name, rollNum, password };
 
     useEffect(() => {
         if (userDetails) {
@@ -91,39 +90,34 @@ const ViewStudent = () => {
     }, [userDetails]);
 
     const submitHandler = (event) => {
-        event.preventDefault()
+        event.preventDefault();
         dispatch(updateUser(fields, studentID, address))
             .then(() => {
                 dispatch(getUserDetails(studentID, address));
             })
             .catch((error) => {
-                console.error(error)
-            })
-    }
+                console.error(error);
+            });
+    };
 
     const deleteHandler = () => {
-        setMessage("Sorry the delete function has been disabled for now.")
-        setShowPopup(true)
-
-        // dispatch(deleteUser(studentID, address))
-        //     .then(() => {
-        //         navigate(-1)
-        //     })
-    }
+        setMessage("Sorry the delete function has been disabled for now.");
+        setShowPopup(true);
+    };
 
     const removeHandler = (id, deladdress) => {
         dispatch(removeStuff(id, deladdress))
             .then(() => {
                 dispatch(getUserDetails(studentID, address));
-            })
-    }
+            });
+    };
 
     const removeSubAttendance = (subId) => {
         dispatch(updateStudentFields(studentID, { subId }, "RemoveStudentSubAtten"))
             .then(() => {
                 dispatch(getUserDetails(studentID, address));
-            })
-    }
+            });
+    };
 
     const overallAttendancePercentage = calculateOverallAttendancePercentage(subjectAttendance);
     const overallAbsentPercentage = 100 - overallAttendancePercentage;
@@ -168,17 +162,20 @@ const ViewStudent = () => {
                                         <StyledTableCell>{sessions}</StyledTableCell>
                                         <StyledTableCell>{subjectAttendancePercentage}%</StyledTableCell>
                                         <StyledTableCell align="center">
-                                            <Button variant="contained"
-                                                onClick={() => handleOpen(subId)}>
+                                            <Button variant="contained" onClick={() => handleOpen(subId)}>
                                                 {openStates[subId] ? <KeyboardArrowUp /> : <KeyboardArrowDown />}Details
                                             </Button>
-                                            <IconButton onClick={() => removeSubAttendance(subId)}>
-                                                <DeleteIcon color="error" />
-                                            </IconButton>
-                                            <Button variant="contained" sx={styles.attendanceButton}
-                                                onClick={() => navigate(`/Admin/subject/student/attendance/${studentID}/${subId}`)}>
-                                                Change
-                                            </Button>
+                                            {role === 'admin' && (
+                                                <>
+                                                    <IconButton onClick={() => removeSubAttendance(subId)}>
+                                                        <DeleteIcon color="error" />
+                                                    </IconButton>
+                                                    <Button variant="contained" sx={styles.attendanceButton}
+                                                        onClick={() => navigate(`/Admin/subject/student/attendance/${studentID}/${subId}`)}>
+                                                        Change
+                                                    </Button>
+                                                </>
+                                            )}
                                         </StyledTableCell>
                                     </StyledTableRow>
                                     <StyledTableRow>
@@ -206,7 +203,7 @@ const ViewStudent = () => {
                                                                         </StyledTableCell>
                                                                         <StyledTableCell align="right">{data.status}</StyledTableCell>
                                                                     </StyledTableRow>
-                                                                )
+                                                                );
                                                             })}
                                                         </TableBody>
                                                     </Table>
@@ -215,27 +212,32 @@ const ViewStudent = () => {
                                         </StyledTableCell>
                                     </StyledTableRow>
                                 </TableBody>
-                            )
-                        }
-                        )}
+                            );
+                        })}
                     </Table>
                     <div>
                         Overall Attendance Percentage: {overallAttendancePercentage.toFixed(2)}%
                     </div>
-                    <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={() => removeHandler(studentID, "RemoveStudentAtten")}>Delete All</Button>
-                    <Button variant="contained" sx={styles.styledButton} onClick={() => navigate("/Admin/students/student/attendance/" + studentID)}>
-                        Add Attendance
-                    </Button>
+                    {role === 'admin' && (
+                        <>
+                            <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={() => removeHandler(studentID, "RemoveStudentAtten")}>Delete All</Button>
+                            <Button variant="contained" sx={styles.styledButton} onClick={() => navigate("/Admin/students/student/attendance/" + studentID)}>
+                                Add Attendance
+                            </Button>
+                        </>
+                    )}
                 </>
-            )
-        }
+            );
+        };
+
         const renderChartSection = () => {
             return (
                 <>
                     <CustomBarChart chartData={subjectData} dataKey="attendancePercentage" />
                 </>
-            )
-        }
+            );
+        };
+
         return (
             <>
                 {subjectAttendance && Array.isArray(subjectAttendance) && subjectAttendance.length > 0
@@ -260,17 +262,19 @@ const ViewStudent = () => {
                         </Paper>
                     </>
                     :
-                    <Button variant="contained" sx={styles.styledButton} onClick={() => navigate("/Admin/students/student/attendance/" + studentID)}>
-                        Add Attendance
-                    </Button>
+                    role === 'admin' && (
+                        <Button variant="contained" sx={styles.styledButton} onClick={() => navigate("/Admin/students/student/attendance/" + studentID)}>
+                            Add Attendance
+                        </Button>
+                    )
                 }
             </>
-        )
-    }
+        );
+    };
 
     const StudentMarksSection = () => {
         const renderTableSection = () => {
-            return (
+            return role != "teacher" ? <StudentExamMarksTeacher/> : (
                 <>
                     <h3>Subject Marks:</h3>
                     <Table>
@@ -294,19 +298,22 @@ const ViewStudent = () => {
                             })}
                         </TableBody>
                     </Table>
+                   
                     <Button variant="contained" sx={styles.styledButton} onClick={() => navigate("/Admin/students/student/marks/" + studentID)}>
                         Add Marks
                     </Button>
                 </>
-            )
-        }
+            );
+        };
+
         const renderChartSection = () => {
             return (
                 <>
                     <CustomBarChart chartData={subjectMarks} dataKey="marksObtained" />
                 </>
-            )
-        }
+            );
+        };
+
         return (
             <>
                 {subjectMarks && Array.isArray(subjectMarks) && subjectMarks.length > 0
@@ -331,13 +338,15 @@ const ViewStudent = () => {
                         </Paper>
                     </>
                     :
-                    <Button variant="contained" sx={styles.styledButton} onClick={() => navigate("/Admin/students/student/marks/" + studentID)}>
-                        Add Marks
-                    </Button>
+                    role === 'admin' && (
+                        <Button variant="contained" sx={styles.styledButton} onClick={() => navigate("/Admin/students/student/marks/" + studentID)}>
+                            Add Marks
+                        </Button>
+                    )
                 }
             </>
-        )
-    }
+        );
+    };
 
     const StudentDetailsSection = () => {
         return (
@@ -354,47 +363,15 @@ const ViewStudent = () => {
                         <CustomPieChart data={chartData} />
                     )
                 }
-                <Button variant="contained" sx={styles.styledButton} onClick={deleteHandler}>
-                    Delete
-                </Button>
+                {role === 'admin' && (
+                    <Button variant="contained" sx={styles.styledButton} onClick={deleteHandler}>
+                        Delete
+                    </Button>
+                )}
                 <br />
-                {/* <Button variant="contained" sx={styles.styledButton} className="show-tab" onClick={() => { setShowTab(!showTab) }}>
-                    {
-                        showTab
-                            ? <KeyboardArrowUp />
-                            : <KeyboardArrowDown />
-                    }
-                    Edit Student
-                </Button>
-                <Collapse in={showTab} timeout="auto" unmountOnExit>
-                    <div className="register">
-                        <form className="registerForm" onSubmit={submitHandler}>
-                            <span className="registerTitle">Edit Details</span>
-                            <label>Name</label>
-                            <input className="registerInput" type="text" placeholder="Enter user's name..."
-                                value={name}
-                                onChange={(event) => setName(event.target.value)}
-                                autoComplete="name" required />
-
-                            <label>Roll Number</label>
-                            <input className="registerInput" type="number" placeholder="Enter user's Roll Number..."
-                                value={rollNum}
-                                onChange={(event) => setRollNum(event.target.value)}
-                                required />
-
-                            <label>Password</label>
-                            <input className="registerInput" type="password" placeholder="Enter user's password..."
-                                value={password}
-                                onChange={(event) => setPassword(event.target.value)}
-                                autoComplete="new-password" />
-
-                            <button className="registerButton" type="submit" >Update</button>
-                        </form>
-                    </div>
-                </Collapse> */}
             </div>
-        )
-    }
+        );
+    };
 
     return (
         <>
@@ -430,12 +407,11 @@ const ViewStudent = () => {
                 </>
             }
             <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
-
         </>
-    )
-}
+    );
+};
 
-export default ViewStudent
+export default ViewStudent;
 
 const styles = {
     attendanceButton: {
@@ -452,4 +428,4 @@ const styles = {
             backgroundColor: "#106312",
         }
     }
-}
+};
