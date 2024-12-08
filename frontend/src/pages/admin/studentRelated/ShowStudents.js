@@ -1,95 +1,101 @@
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { getAllStudents } from '../../../redux/studentRelated/studentHandle';
 import { deleteUser } from '../../../redux/userRelated/userHandle';
 import {
-    Paper, Box, IconButton
+    Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+    TablePagination, IconButton, Button, ButtonGroup, Popper, Grow, MenuItem, MenuList, Card, CardContent,
+    TextField
 } from '@mui/material';
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
-import { BlackButton, BlueButton, GreenButton } from '../../../components/buttonStyles';
-import TableTemplate from '../../../components/TableTemplate';
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import SpeedDialTemplate from '../../../components/SpeedDialTemplate';
-
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-// import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
-import Grow from '@mui/material/Grow';
-import Popper from '@mui/material/Popper';
-import MenuItem from '@mui/material/MenuItem';
-import MenuList from '@mui/material/MenuList';
+import { PersonRemove, PersonAddAlt1, Visibility, KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
 import Popup from '../../../components/Popup';
 
-const ShowStudents = () => {
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    fontSize: 14,
+    padding: '6px 16px',
+}));
 
-    const navigate = useNavigate()
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+    },
+}));
+
+const StyledTableBodyCell = styled(TableCell)({
+    fontSize: 14,
+    padding: '6px 16px',
+});
+
+const ActionButtonsContainer = styled(Box)({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '8px',
+    zIndex: 1,
+});
+
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+    color: theme.palette.error.main,
+    padding: 6,
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+    padding: '4px 8px',
+    fontSize: 12,
+}));
+
+const ShowStudents = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { studentsList, loading, error, response } = useSelector((state) => state.student);
-    const { currentUser } = useSelector(state => state.user)
+    const { studentsList, loading, error } = useSelector((state) => state.student);
+    const { currentUser } = useSelector(state => state.user);
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [showPopup, setShowPopup] = useState(false);
+    const [message, setMessage] = useState("");
+    const [filterQuery, setFilterQuery] = useState("");
 
     useEffect(() => {
         dispatch(getAllStudents(currentUser._id));
     }, [currentUser._id, dispatch]);
 
-    if (error) {
-        console.log(error);
-    }
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
 
-    const [showPopup, setShowPopup] = React.useState(false);
-    const [message, setMessage] = React.useState("");
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     const deleteHandler = (deleteID, address) => {
-        console.log(deleteID);
-        console.log(address);
-        setMessage("Sorry the delete function has been disabled for now.")
-        setShowPopup(true)
+        setMessage("Sorry, the delete function has been disabled for now.");
+        setShowPopup(true);
+    };
 
-        // dispatch(deleteUser(deleteID, address))
-        //     .then(() => {
-        //         dispatch(getAllStudents(currentUser._id));
-        //     })
-    }
+    const filteredStudents = studentsList.filter(student => 
+        student.name.toLowerCase().includes(filterQuery.toLowerCase()) ||
+        student.rollNum.toString().includes(filterQuery) ||
+        student.sclassName.sclassName.toLowerCase().includes(filterQuery.toLowerCase())
+    );
 
-    const studentColumns = [
-        { id: 'name', label: 'Name', minWidth: 170 },
-        { id: 'rollNum', label: 'Roll Number', minWidth: 100 },
-        { id: 'sclassName', label: 'Class', minWidth: 170 },
-    ]
-
-    const studentRows = studentsList && studentsList.length > 0 && studentsList.map((student) => {
-        return {
-            name: student.name,
-            rollNum: student.rollNum,
-            sclassName: student.sclassName.sclassName,
-            id: student._id,
-        };
-    })
-
-    const StudentButtonHaver = ({ row }) => {
-        const options = ['Take Attendance', 'Provide Marks'];
-
+    const StudentActions = ({ row }) => {
         const [open, setOpen] = React.useState(false);
         const anchorRef = React.useRef(null);
         const [selectedIndex, setSelectedIndex] = React.useState(0);
+        const options = ['Take Attendance', 'Provide Marks'];
 
         const handleClick = () => {
-            console.info(`You clicked ${options[selectedIndex]}`);
             if (selectedIndex === 0) {
-                handleAttendance();
+                navigate("/Admin/students/student/attendance/" + row._id);
             } else if (selectedIndex === 1) {
-                handleMarks();
+                navigate("/Admin/students/student/marks/" + row._id);
             }
-        };
-
-        const handleAttendance = () => {
-            navigate("/Admin/students/student/attendance/" + row.id)
-        }
-        const handleMarks = () => {
-            navigate("/Admin/students/student/marks/" + row.id)
         };
 
         const handleMenuItemClick = (event, index) => {
@@ -105,110 +111,142 @@ const ShowStudents = () => {
             if (anchorRef.current && anchorRef.current.contains(event.target)) {
                 return;
             }
-
             setOpen(false);
         };
+
         return (
-            <>
-                <IconButton onClick={() => deleteHandler(row.id, "Student")}>
-                    <PersonRemoveIcon color="error" />
-                </IconButton>
-                <BlueButton variant="contained"
-                    onClick={() => navigate("/Admin/students/student/" + row.id)}>
-                    View
-                </BlueButton>
-                <React.Fragment>
-                    <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-                        <Button onClick={handleClick}>{options[selectedIndex]}</Button>
-                        <BlackButton
-                            size="small"
-                            aria-controls={open ? 'split-button-menu' : undefined}
-                            aria-expanded={open ? 'true' : undefined}
-                            aria-label="select merge strategy"
-                            aria-haspopup="menu"
-                            onClick={handleToggle}
+            <Box sx={{ position: 'relative', zIndex: 1 }}>
+                <ButtonGroup variant="contained" size="small" ref={anchorRef}>
+                    <StyledButton onClick={handleClick}>{options[selectedIndex]}</StyledButton>
+                    <StyledButton size="small" onClick={handleToggle}>
+                        {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                    </StyledButton>
+                </ButtonGroup>
+                <Popper
+                    open={open}
+                    anchorEl={anchorRef.current}
+                    transition
+                    disablePortal
+                    placement="top-start"
+                    style={{ zIndex: 1000 }}
+                >
+                    {({ TransitionProps, placement }) => (
+                        <Grow
+                            {...TransitionProps}
+                            style={{
+                                transformOrigin:
+                                    placement === 'bottom' ? 'center top' : 'center bottom',
+                            }}
                         >
-                            {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                        </BlackButton>
-                    </ButtonGroup>
-                    <Popper
-                        sx={{
-                            zIndex: 1,
-                        }}
-                        open={open}
-                        anchorEl={anchorRef.current}
-                        role={undefined}
-                        transition
-                        disablePortal
-                    >
-                        {({ TransitionProps, placement }) => (
-                            <Grow
-                                {...TransitionProps}
-                                style={{
-                                    transformOrigin:
-                                        placement === 'bottom' ? 'center top' : 'center bottom',
-                                }}
-                            >
-                                <Paper>
-                                    <ClickAwayListener onClickAway={handleClose}>
-                                        <MenuList id="split-button-menu" autoFocusItem>
-                                            {options.map((option, index) => (
-                                                <MenuItem
-                                                    key={option}
-                                                    disabled={index === 2}
-                                                    selected={index === selectedIndex}
-                                                    onClick={(event) => handleMenuItemClick(event, index)}
-                                                >
-                                                    {option}
-                                                </MenuItem>
-                                            ))}
-                                        </MenuList>
-                                    </ClickAwayListener>
-                                </Paper>
-                            </Grow>
-                        )}
-                    </Popper>
-                </React.Fragment>
-            </>
+                            <Card>
+                                <MenuList id="split-button-menu" autoFocusItem>
+                                    {options.map((option, index) => (
+                                        <MenuItem
+                                            key={option}
+                                            selected={index === selectedIndex}
+                                            onClick={(event) => handleMenuItemClick(event, index)}
+                                        >
+                                            {option}
+                                        </MenuItem>
+                                    ))}
+                                </MenuList>
+                            </Card>
+                        </Grow>
+                    )}
+                </Popper>
+            </Box>
         );
     };
 
-    const actions = [
-        {
-            icon: <PersonAddAlt1Icon color="primary" />, name: 'Add New Student',
-            action: () => navigate("/Admin/addstudents")
-        },
-        {
-            icon: <PersonRemoveIcon color="error" />, name: 'Delete All Students',
-            action: () => deleteHandler(currentUser._id, "Students")
-        },
-    ];
+    if (loading) {
+        return <Typography>Loading...</Typography>;
+    }
+
+    if (error) {
+        return <Typography color="error">Error: {error}</Typography>;
+    }
 
     return (
-        <>
-            {loading ?
-                <div>Loading...</div>
-                :
-                <>
-                    {response ?
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
-                            <GreenButton variant="contained" onClick={() => navigate("/Admin/addstudents")}>
-                                Add Students
-                            </GreenButton>
-                        </Box>
-                        :
-                        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                            {Array.isArray(studentsList) && studentsList.length > 0 &&
-                                <TableTemplate buttonHaver={StudentButtonHaver} columns={studentColumns} rows={studentRows} />
-                            }
-                            <SpeedDialTemplate actions={actions} />
-                        </Paper>
-                    }
-                </>
-            }
+        <Card>
+            <CardContent>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                    <Typography variant="h6" component="h2">
+                        Students List
+                    </Typography>
+                    <StyledButton
+                        variant="contained"
+                        color="primary"
+                        startIcon={<PersonAddAlt1 />}
+                        onClick={() => navigate("/Admin/addstudents")}
+                    >
+                        Add Students
+                    </StyledButton>
+                </Box>
+                <TextField
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    label="Filter students"
+                    value={filterQuery}
+                    onChange={(e) => setFilterQuery(e.target.value)}
+                    style={{ marginBottom: '1rem' }}
+                />
+                <TableContainer>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell>Name</StyledTableCell>
+                                <StyledTableCell>Roll Number</StyledTableCell>
+                                <StyledTableCell>Class</StyledTableCell>
+                                <StyledTableCell align="center">Actions</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {filteredStudents
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((student) => (
+                                    <StyledTableRow key={student._id}>
+                                        <StyledTableBodyCell>{student.name}</StyledTableBodyCell>
+                                        <StyledTableBodyCell>{student.rollNum}</StyledTableBodyCell>
+                                        <StyledTableBodyCell>{student.sclassName.sclassName}</StyledTableBodyCell>
+                                        <StyledTableBodyCell>
+                                            <ActionButtonsContainer
+                                            
+                                            >
+                                                <StyledIconButton onClick={() => deleteHandler(student._id, "Student")}>
+                                                    <PersonRemove fontSize="small" />
+                                                </StyledIconButton>
+                                                <StyledButton
+                                                    variant="contained"
+                                                    color="primary"
+                                                    startIcon={<Visibility />}
+                                                    onClick={() => navigate("/Admin/students/student/" + student._id)}
+                                                >
+                                                    View
+                                                </StyledButton>
+                                                <StudentActions row={student} />
+                                            </ActionButtonsContainer>
+                                        </StyledTableBodyCell>
+                                    </StyledTableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={filteredStudents.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </CardContent>
             <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
-        </>
+        </Card>
     );
 };
 
 export default ShowStudents;
+
+ 

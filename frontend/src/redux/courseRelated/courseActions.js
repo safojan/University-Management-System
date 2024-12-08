@@ -21,7 +21,7 @@ import {
 export const getCourses = () => async (dispatch) => {
     dispatch(fetchCoursesRequest());
     try {
-        const response = await axios.get('/api/courses');
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/courses`);
         dispatch(fetchCoursesSuccess(response.data));
     } catch (error) {
         dispatch(fetchCoursesFailure(error.message));
@@ -31,7 +31,7 @@ export const getCourses = () => async (dispatch) => {
 export const createCourse = (courseData) => async (dispatch) => {
     dispatch(createCourseRequest());
     try {
-        const response = await axios.post('/api/courses', courseData);
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/courses`, courseData);
         dispatch(createCourseSuccess(response.data));
     } catch (error) {
         dispatch(createCourseFailure(error.message));
@@ -41,7 +41,7 @@ export const createCourse = (courseData) => async (dispatch) => {
 export const updateCourse = (id, courseData) => async (dispatch) => {
     dispatch(updateCourseRequest());
     try {
-        const response = await axios.put(`/api/courses/${id}`, courseData);
+        const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/api/courses/${id}`, courseData);
         dispatch(updateCourseSuccess(response.data));
     } catch (error) {
         dispatch(updateCourseFailure(error.message));
@@ -51,7 +51,7 @@ export const updateCourse = (id, courseData) => async (dispatch) => {
 export const deleteCourse = (id) => async (dispatch) => {
     dispatch(deleteCourseRequest());
     try {
-        await axios.delete(`/api/courses/${id}`);
+        await axios.delete(`${process.env.REACT_APP_BASE_URL}/api/courses/${id}`);
         dispatch(deleteCourseSuccess(id));
     } catch (error) {
         dispatch(deleteCourseFailure(error.message));
@@ -61,7 +61,7 @@ export const deleteCourse = (id) => async (dispatch) => {
 export const getCourseDetails = (id) => async (dispatch) => {
     dispatch(fetchCourseDetailsRequest());
     try {
-        const response = await axios.get(`/api/courses/${id}`);
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/courses/${id}`);
         dispatch(fetchCourseDetailsSuccess(response.data));
     } catch (error) {
         dispatch(fetchCourseDetailsFailure(error.message));

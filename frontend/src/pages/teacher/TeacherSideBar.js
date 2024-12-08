@@ -1,4 +1,3 @@
-// TeacherSideBar.js
 import React from 'react';
 import {
   Divider,
@@ -6,7 +5,9 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Box,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { Link, useLocation } from 'react-router-dom';
 
 import HomeIcon from '@mui/icons-material/Home';
@@ -24,40 +25,59 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useSelector } from 'react-redux';
 
+const DarkSidebar = styled(Box)(({ theme }) => ({
+
+
+  
+  backgroundColor: theme.palette.background.default,
+  color: theme.palette.background.paper,
+  '& .MuiListItemIcon-root': {
+    color: theme.palette.background.paper,
+  },
+  '& .MuiListItemButton-root': {
+    '&:hover, &.Mui-selected': {
+      backgroundColor: 'rgba(238, 238, 238, 0.08)',
+    },
+  },
+  '& .MuiListSubheader-root': {
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.secondary,
+  },
+  '& .MuiDivider-root': {
+    borderColor: 'rgba(238, 238, 238, 0.12)',
+  },
+}));
+
 const TeacherSideBar = () => {
   const { currentUser } = useSelector((state) => state.user);
   const location = useLocation();
 
+  const isActive = (path) => location.pathname.startsWith(path);
+
   return (
-    <>
-      {/* Home */}
+    <DarkSidebar>
       <ListItemButton
         component={Link}
         to="/Teacher/dashboard"
-        selected={location.pathname === '/Teacher/dashboard'}
+        selected={isActive('/Teacher/dashboard')}
       >
         <ListItemIcon>
-          <HomeIcon
-            color={location.pathname === '/Teacher/dashboard' ? 'primary' : 'inherit'}
-          />
+          <HomeIcon />
         </ListItemIcon>
         <ListItemText primary="Home" />
       </ListItemButton>
 
       <Divider />
 
-      {/* Course Management */}
       <ListSubheader inset>Course Management</ListSubheader>
 
       <ListItemButton
         component={Link}
         to="/Teacher/courses"
-        selected={location.pathname.startsWith('/Teacher/courses')}
+        selected={isActive('/Teacher/courses')}
       >
         <ListItemIcon>
-          <ClassIcon
-            color={location.pathname.startsWith('/Teacher/courses') ? 'primary' : 'inherit'}
-          />
+          <ClassIcon />
         </ListItemIcon>
         <ListItemText primary="Courses" />
       </ListItemButton>
@@ -65,12 +85,10 @@ const TeacherSideBar = () => {
       <ListItemButton
         component={Link}
         to="/Teacher/syllabus"
-        selected={location.pathname.startsWith('/Teacher/syllabus')}
+        selected={isActive('/Teacher/syllabus')}
       >
         <ListItemIcon>
-          <BookIcon
-            color={location.pathname.startsWith('/Teacher/syllabus') ? 'primary' : 'inherit'}
-          />
+          <BookIcon />
         </ListItemIcon>
         <ListItemText primary="Syllabus" />
       </ListItemButton>
@@ -78,12 +96,10 @@ const TeacherSideBar = () => {
       <ListItemButton
         component={Link}
         to="/Teacher/schedule"
-        selected={location.pathname.startsWith('/Teacher/schedule')}
+        selected={isActive('/Teacher/schedule')}
       >
         <ListItemIcon>
-          <ScheduleIcon
-            color={location.pathname.startsWith('/Teacher/schedule') ? 'primary' : 'inherit'}
-          />
+          <ScheduleIcon />
         </ListItemIcon>
         <ListItemText primary="Schedule" />
       </ListItemButton>
@@ -91,30 +107,25 @@ const TeacherSideBar = () => {
       <ListItemButton
         component={Link}
         to="/Teacher/materials"
-        selected={location.pathname.startsWith('/Teacher/materials')}
+        selected={isActive('/Teacher/materials')}
       >
         <ListItemIcon>
-          <AssignmentIcon
-            color={location.pathname.startsWith('/Teacher/materials') ? 'primary' : 'inherit'}
-          />
+          <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="Materials" />
       </ListItemButton>
 
       <Divider />
 
-      {/* Assessment Module */}
       <ListSubheader inset>Assessment</ListSubheader>
 
       <ListItemButton
         component={Link}
         to="/Teacher/assignments"
-        selected={location.pathname.startsWith('/Teacher/assignments')}
+        selected={isActive('/Teacher/assignments')}
       >
         <ListItemIcon>
-          <AssignmentTurnedInIcon
-            color={location.pathname.startsWith('/Teacher/assignments') ? 'primary' : 'inherit'}
-          />
+          <AssignmentTurnedInIcon />
         </ListItemIcon>
         <ListItemText primary="Assignments" />
       </ListItemButton>
@@ -122,12 +133,10 @@ const TeacherSideBar = () => {
       <ListItemButton
         component={Link}
         to="/Teacher/quizzes"
-        selected={location.pathname.startsWith('/Teacher/quizzes')}
+        selected={isActive('/Teacher/quizzes')}
       >
         <ListItemIcon>
-          <QuizIcon
-            color={location.pathname.startsWith('/Teacher/quizzes') ? 'primary' : 'inherit'}
-          />
+          <QuizIcon />
         </ListItemIcon>
         <ListItemText primary="Quizzes" />
       </ListItemButton>
@@ -135,12 +144,10 @@ const TeacherSideBar = () => {
       <ListItemButton
         component={Link}
         to="/Teacher/attendance"
-        selected={location.pathname.startsWith('/Teacher/attendance')}
+        selected={isActive('/Teacher/attendance')}
       >
         <ListItemIcon>
-          <EventNoteIcon
-            color={location.pathname.startsWith('/Teacher/attendance') ? 'primary' : 'inherit'}
-          />
+          <EventNoteIcon />
         </ListItemIcon>
         <ListItemText primary="Attendance" />
       </ListItemButton>
@@ -148,30 +155,25 @@ const TeacherSideBar = () => {
       <ListItemButton
         component={Link}
         to="/Teacher/grades"
-        selected={location.pathname.startsWith('/Teacher/grades')}
+        selected={isActive('/Teacher/grades')}
       >
         <ListItemIcon>
-          <BarChartIcon
-            color={location.pathname.startsWith('/Teacher/grades') ? 'primary' : 'inherit'}
-          />
+          <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary="Grades" />
       </ListItemButton>
 
       <Divider />
 
-      {/* Reports and Communication */}
       <ListSubheader inset>Reports & Communication</ListSubheader>
 
       <ListItemButton
         component={Link}
         to="/Teacher/reports"
-        selected={location.pathname.startsWith('/Teacher/reports')}
+        selected={isActive('/Teacher/reports')}
       >
         <ListItemIcon>
-          <ReportIcon
-            color={location.pathname.startsWith('/Teacher/reports') ? 'primary' : 'inherit'}
-          />
+          <ReportIcon />
         </ListItemIcon>
         <ListItemText primary="Reports" />
       </ListItemButton>
@@ -179,28 +181,23 @@ const TeacherSideBar = () => {
       <ListItemButton
         component={Link}
         to="/Teacher/communication"
-        selected={location.pathname.startsWith('/Teacher/communication')}
+        selected={isActive('/Teacher/communication')}
       >
         <ListItemIcon>
-          <ChatIcon
-            color={location.pathname.startsWith('/Teacher/communication') ? 'primary' : 'inherit'}
-          />
+          <ChatIcon />
         </ListItemIcon>
         <ListItemText primary="Communication" />
       </ListItemButton>
 
       <Divider />
 
-      {/* Profile and Logout */}
       <ListItemButton
         component={Link}
         to="/Teacher/profile"
-        selected={location.pathname === '/Teacher/profile'}
+        selected={isActive('/Teacher/profile')}
       >
         <ListItemIcon>
-          <AccountCircleOutlinedIcon
-            color={location.pathname === '/Teacher/profile' ? 'primary' : 'inherit'}
-          />
+          <AccountCircleOutlinedIcon />
         </ListItemIcon>
         <ListItemText primary="Profile" />
       </ListItemButton>
@@ -211,8 +208,9 @@ const TeacherSideBar = () => {
         </ListItemIcon>
         <ListItemText primary="Logout" />
       </ListItemButton>
-    </>
+    </DarkSidebar>
   );
 };
 
 export default TeacherSideBar;
+
