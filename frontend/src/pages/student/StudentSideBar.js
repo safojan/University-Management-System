@@ -55,6 +55,12 @@ const StudentSideBar = () => {
                     </ListItemIcon>
                     <ListItemText primary="Complain" sx={{ color: isActive('/Student/complain') ? 'primary.main' : 'inherit' }} />
                 </ListItemButton>
+                <ListItemButton component={Link} to="/Student/fee" sx={{ mb: 1 }}>
+                    <ListItemIcon>
+                        <AnnouncementOutlinedIcon color={isActive('/Student/fee') ? 'primary' : 'inherit'} />
+                    </ListItemIcon>
+                    <ListItemText primary="Fee" sx={{ color: isActive('/Student/fee') ? 'primary.main' : 'inherit' }} />
+                </ListItemButton>
             </React.Fragment>
             <Divider sx={{ my: 2, backgroundColor: '#444' }} />
             <React.Fragment>

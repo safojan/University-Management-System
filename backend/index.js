@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
+
 // const bodyParser = require("body-parser")
 const app = express()
 const Routes = require("./routes/route.js")
@@ -9,6 +10,7 @@ const Routes = require("./routes/route.js")
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 const attendanceRoutes = require('./routes/attendanceRoutes');
+const feeRoutes = require('./routes/feeRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const gradesRoutes = require('./routes/gradesRoutes');
 const gradingRoutes = require('./routes/gradingRoutes');
@@ -57,6 +59,7 @@ app.use('/api/grades', gradesRoutes);
 app.use('/api/material', materialRoutes);
 app.use('/api/performance', performanceRoutes);
 app.use('/api/progressReports', progressReportRoutes);
+app.use('/api/fee', feeRoutes);
 app.use('/api/report', reportRoutes);
 app.use('/api/schedule', scheduleRoutes);
 app.use('/api/syllabus', syllabusRoutes);

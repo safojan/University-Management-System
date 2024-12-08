@@ -17,6 +17,7 @@ import CourseRegistration from './CourseRegistration';
 import StudentProfile from './StudentProfile';
 import StudentSubjects from './StudentSubjects';
 import QuizPage from './QuizPage';
+import FeeManagement from './feeManagement';
 import ViewStdAttendance from './ViewStdAttendance';
 import StudentComplain from './StudentComplain';
 import AssignmentPage from './AssignmentPage';
@@ -83,6 +84,7 @@ const StudentDashboard = () => {
                         <Route path="/Student/course-material" element={<MaterialList />} />
                         <Route path="/Student/assignments" element={<AssignmentPage />} />
                         <Route path="/Student/quizzes" element={<QuizPage />} />
+                        <Route path="/Student/fee" element={<FeeManagement />} />
                         <Route path="/Student/subjects" element={<StudentSubjects />} />
                         <Route path="/Student/attendance" element={<ViewStdAttendance />} />
                         <Route path="/Student/complain" element={<StudentComplain />} />
