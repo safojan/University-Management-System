@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getAllTeacherList } from "./teacherHandle";
 
 const initialState = {
     teachersList: [],
@@ -6,6 +7,7 @@ const initialState = {
     loading: false,
     error: null,
     response: null,
+    allTeacherList : []
 };
 
 const teacherSlice = createSlice({
@@ -40,6 +42,17 @@ const teacherSlice = createSlice({
             state.loading = false;
             state.error = null;
             state.response = null;
+        },
+        getAllTeacherListSuccess: (state, action) => {
+            state.allTeacherList = action.payload;
+            state.loading = false;
+            state.error = null;
+            state.response = null
+        },
+        getAllTeacherListFailed: (state, action) => {
+            state.response = action.payload;
+            state.loading = false;
+            state.error = null;
         }
     },
 });
@@ -50,7 +63,9 @@ export const {
     getFailed,
     getError,
     doneSuccess,
-    postDone
+    postDone,
+    getAllTeacherListSuccess,
+    getAllTeacherListFailed
 } = teacherSlice.actions;
 
 export const teacherReducer = teacherSlice.reducer;

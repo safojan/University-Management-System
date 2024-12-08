@@ -1,13 +1,44 @@
 const Notice = require('../models/noticeSchema.js');
+const mg = require('../emailConfig.js');
+const Teacher = require('../models/teacherSchema.js');
+const Student = require('../models/studentSchema.js');
 
 const noticeCreate = async (req, res) => {
     try {
         const notice = new Notice({
             ...req.body,
             school: req.body.adminID
-        })
-        const result = await notice.save()
-        res.send(result)
+        });
+
+        const result = await notice.save();
+
+        // Fetch all teachers and students email addresses
+        const teachers = await Teacher.find({}, 'email');
+        const students = await Student.find({}, 'email');
+
+        const emailList = [...teachers, ...students].map(user => user.email);
+
+        // Email content
+        const mailOptions = {
+            from: 'jsafdar199@gmail.com', // Use your Gmail email address
+            to: ["i228804@nu.edu.pk"],
+            subject: 'New Notification Posted',
+            text: `A new notification has been posted: ${notice.content}`,
+            html: `<h1>A new notification has been posted:</h1><p>${notice.content}</p>`
+        };
+
+        // Send email
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+                return ;
+            }
+            console.log('Email sent: ' + info.response);
+        });
+
+        console.log("i am here");
+
+        res.send(result);
     } catch (err) {
         res.status(500).json(err);
     }

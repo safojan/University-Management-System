@@ -12,11 +12,10 @@ const ViewSubject = () => {
   const params = useParams()
   const dispatch = useDispatch();
   const { subloading, subjectDetails, sclassStudents, getresponse, error } = useSelector((state) => state.sclass);
-
   const { classID, subjectID } = params
 
   useEffect(() => {
-     (getSubjectDetails(subjectID, "Subject"));
+     dispatch(getSubjectDetails(subjectID, "Subject"));
     dispatch(getClassStudents(classID));
    dispatch(getSubjectAttandanceForClass(classID, subjectID));
 

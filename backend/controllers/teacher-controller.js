@@ -192,6 +192,18 @@ const teacherAttendance = async (req, res) => {
     }
 };
 
+// const getAllTeacherList = async (req, res) => {
+//     try {
+//         //get all the teachers form the teacher collection
+//         let teachers = await Teacher.find({})
+//         //send the teachers list
+//         res.send(teachers);
+        
+//     } catch (err) {
+//         res.status(500).json(err);
+//     }
+// };
+
 module.exports = {
     teacherRegister,
     teacherLogIn,
@@ -201,5 +213,6 @@ module.exports = {
     deleteTeacher,
     deleteTeachers,
     deleteTeachersByClass,
-    teacherAttendance
+    teacherAttendance,
+    // getAllTeacherList
 };

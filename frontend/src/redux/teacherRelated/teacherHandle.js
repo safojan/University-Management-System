@@ -5,7 +5,8 @@ import {
     getFailed,
     getError,
     postDone,
-    doneSuccess
+    doneSuccess,
+    getAllTeacherListSuccess
 } from './teacherSlice';
 
 export const getAllTeachers = (id) => async (dispatch) => {
@@ -14,8 +15,11 @@ export const getAllTeachers = (id) => async (dispatch) => {
     try {
         const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/Teachers/${id}`);
         if (result.data.message) {
+        
             dispatch(getFailed(result.data.message));
         } else {
+            console.log("all teacchers are here : ");
+            console.log(result.data);
             dispatch(getSuccess(result.data));
         }
     } catch (error) {
@@ -48,3 +52,16 @@ export const updateTeachSubject = (teacherId, teachSubject) => async (dispatch) 
         dispatch(getError(error));
     }
 }
+
+//get all teachers of the school
+export const getAllTeacherList = () => async (dispatch) => {
+    dispatch(getRequest());
+
+    axios.get(`${process.env.REACT_APP_BASE_URL}/teachers`)
+        .then((response) => {
+            dispatch(getAllTeacherListSuccess(response.data));
+        })
+        .catch((error) => {
+            dispatch(getError(error));
+        });
+} 

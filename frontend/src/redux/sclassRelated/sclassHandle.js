@@ -104,11 +104,12 @@ export const getTeacherFreeClassSubjects = (id) => async (dispatch) => {
 
 export const getSubjectDetails = (id, address) => async (dispatch) => {
     dispatch(getSubDetailsRequest());
-
+           
     try {
         const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`);
         if (result.data) {
             dispatch(getSubDetailsSuccess(result.data));
+           
         }
     } catch (error) {
         dispatch(getError(error));
