@@ -6,6 +6,7 @@ import styled from 'styled-components';
 const AssignmentPage = () => {
     const [assignments, setAssignments] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,22 +16,37 @@ const AssignmentPage = () => {
                 setAssignments(response.data);
                 setLoading(false);
             })
-            .catch(error => {
-                console.error('Error fetching assignments:', error);
+            .catch(err => {
+                console.error('Error fetching assignments:', err);
+                setError('Failed to load assignments. Please try again later.');
                 setLoading(false);
             });
     }, []);
 
     const handleMarkAsDone = (assignmentId) => {
         axios.put(`${process.env.REACT_APP_BASE_URL}/api/assignment/markAsDone/${assignmentId}`)
-            .then(response => {
-                // Update the assignments list locally after marking as done
+            .then(() => {
                 setAssignments(assignments.map(assignment =>
                     assignment._id === assignmentId ? { ...assignment, status: 'done' } : assignment
                 ));
             })
+            .catch(err => {
+                console.error('Error marking assignment as done:', err);
+                alert('Could not mark the assignment as done. Please try again.');
+            });
+    };
+
+    const handleFileUpload = (assignmentId, file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        axios.post(`${process.env.REACT_APP_BASE_URL}/api/assignment/submit/${assignmentId}`, formData)
+            .then(() => {
+                alert('File uploaded successfully!');
+            })
             .catch(error => {
-                console.error('Error marking assignment as done:', error);
+                console.error('Error uploading file:', error);
+                alert('Failed to upload file. Please try again.');
             });
     };
 
@@ -39,26 +55,34 @@ const AssignmentPage = () => {
             <Title>Assignments</Title>
             {loading ? (
                 <LoadingMessage>Loading assignments...</LoadingMessage>
-            ) : (
+            ) : error ? (
+                <ErrorMessage>{error}</ErrorMessage>
+            ) : assignments.length > 0 ? (
                 <AssignmentList>
-                    {assignments.length > 0 ? (
-                        assignments.map((assignment) => (
-                            <AssignmentCard key={assignment._id}>
-                                <AssignmentTitle>{assignment.title}</AssignmentTitle>
-                                <Description>{assignment.description}</Description>
-                                <DueDate>Due Date: {new Date(assignment.dueDate).toLocaleDateString()}</DueDate>
-                                <MarkAsDoneButton
-                                    onClick={() => handleMarkAsDone(assignment._id)}
-                                    disabled={assignment.status === 'done'}
-                                >
-                                    {assignment.status === 'done' ? 'Done' : 'Mark as Done'}
-                                </MarkAsDoneButton>
-                            </AssignmentCard>
-                        ))
-                    ) : (
-                        <p>No assignments available</p>
-                    )}
+                    {assignments.map((assignment) => (
+                        <AssignmentCard key={assignment._id}>
+                            <AssignmentTitle>{assignment.title}</AssignmentTitle>
+                            <Description>{assignment.description}</Description>
+                            <DueDate>Due Date: {new Date(assignment.dueDate).toLocaleDateString()}</DueDate>
+                            {assignment.status !== 'done' && (
+                                <Actions>
+                                    <FileInput
+                                        type="file"
+                                        onChange={(e) => handleFileUpload(assignment._id, e.target.files[0])}
+                                    />
+                                    <MarkAsDoneButton
+                                        onClick={() => handleMarkAsDone(assignment._id)}
+                                    >
+                                        Mark as Done
+                                    </MarkAsDoneButton>
+                                </Actions>
+                            )}
+                            {assignment.status === 'done' && <Status>✔ Completed</Status>}
+                        </AssignmentCard>
+                    ))}
                 </AssignmentList>
+            ) : (
+                <NoAssignmentsMessage>No assignments available</NoAssignmentsMessage>
             )}
         </Container>
     );
@@ -88,6 +112,11 @@ const LoadingMessage = styled.p`
     color: #F08080;
 `;
 
+const ErrorMessage = styled.p`
+    font-size: 1.2rem;
+    color: #FF6347;
+`;
+
 const AssignmentList = styled.div`
     display: flex;
     flex-direction: column;
@@ -103,6 +132,10 @@ const AssignmentCard = styled.div`
     color: white;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: rgba(45, 43, 63, 1);
+    }
 `;
 
 const AssignmentTitle = styled.h3`
@@ -118,6 +151,16 @@ const Description = styled.p`
 const DueDate = styled.p`
     font-size: 1rem;
     margin-bottom: 1rem;
+`;
+
+const Actions = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+`;
+
+const FileInput = styled.input`
+    margin-bottom: 0.5rem;
 `;
 
 const MarkAsDoneButton = styled.button`
@@ -136,4 +179,16 @@ const MarkAsDoneButton = styled.button`
         background-color: #45a049AA;
         cursor: not-allowed;
     }
+`;
+
+const Status = styled.p`
+    font-size: 1rem;
+    color: #4CAF50;
+    margin-top: 0.5rem;
+`;
+
+const NoAssignmentsMessage = styled.p`
+    font-size: 1.2rem;
+    color: #CCCCCC;
+    text-align: center;
 `;

@@ -1,6 +1,8 @@
 const express = require('express');
-const { createAssignment, updateAssignment, getAssignment, deleteAssignment, getAllAssignments, markAsDone } = require('../controllers/assignmentController.js');
+const { createAssignment, updateAssignment, getAssignment, deleteAssignment, getAllAssignments, submitAssignment, markAsDone } = require('../controllers/assignmentController.js');
 const router = express.Router();
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }); // Configure storage as needed
 
 // Route to create a new assignment
 router.post('/createAssignment', createAssignment);
@@ -18,5 +20,6 @@ router.delete('/deleteAssignment/:assignmentId', deleteAssignment);
 
 router.put('/markAsDone/:assignmentId', markAsDone); // New route for marking assignments as done
 
+router.post('/submit/:assignmentId', upload.single('file'), submitAssignment);
 
 module.exports = router;
