@@ -1,9 +1,16 @@
 const Syllabus = require('../models/syllabusSchema.js'); // Assuming you have a Syllabus model
 
+
 // Function to upload a new syllabus
 const uploadSyllabus = async (req, res) => {
     try {
         const { courseId, content } = req.body;
+
+        // Validate input
+        if (!courseId || !content) {
+            console.error('Missing courseId or content in request body');
+            return res.status(400).json({ message: 'Course ID and Content are required' });
+        }
 
         // Create a new syllabus
         const newSyllabus = new Syllabus({
@@ -13,8 +20,10 @@ const uploadSyllabus = async (req, res) => {
 
         // Save the syllabus to the database
         const savedSyllabus = await newSyllabus.save();
+        console.log('Syllabus uploaded successfully:', savedSyllabus);
         res.status(201).json(savedSyllabus);
     } catch (error) {
+        console.error('Error uploading syllabus:', error);
         res.status(500).json({ message: 'Error uploading syllabus', error });
     }
 };

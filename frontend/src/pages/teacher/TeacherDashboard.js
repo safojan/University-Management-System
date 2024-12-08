@@ -30,6 +30,8 @@ import Attendance from './Attendance';
 import FinalGrades from './FinalGrades';
 import ProgressReport from './ProgressReport';
 import ParentCommunication from './ParentCommunication';
+import SyllabusForm from './SyllabusForm';
+
 
 const DarkMainContent = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -164,6 +166,8 @@ const TeacherDashboard = () => {
           <Route path="/Teacher/profile" element={<TeacherProfile />} />
           <Route path="/Teacher/courses" element={<CourseList />} />
           <Route path="/Teacher/syllabus" element={<SyllabusList />} />
+          <Route path="/Teacher/syllabus/add" element={<SyllabusForm />} />
+          <Route path="/Teacher/syllabus/edit/:syllabusId" element={<SyllabusForm />} />
           <Route path="/Teacher/schedule" element={<Schedule />} />
           <Route path="/Teacher/materials" element={<MaterialList />} />
           <Route path="/Teacher/assignments" element={<AssignmentList />} />
