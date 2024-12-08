@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
+const serverless = require('serverless-http');
 // const bodyParser = require("body-parser")
 const app = express()
 const Routes = require("./routes/route.js")
@@ -67,6 +68,9 @@ app.use('/api/quizAssessment', quizAssessmentRoutes);
 app.use('/api/grading', gradingRoutes);
 
 
-app.listen(PORT, () => {
-    console.log(`Server started at port no. ${PORT}`)
-})
+
+module.exports.handler = serverless(app);
+
+// app.listen(PORT, () => {
+//     console.log(`Server started at port no. ${PORT}`)
+// })
