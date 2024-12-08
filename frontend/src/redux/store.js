@@ -10,6 +10,7 @@ import { progressReportReducer } from './progressReportRelated/progressReportSli
 import {assignmentReducer } from './assignmentRelated/assignmentSlice';
 import { courseReducer } from './courseRelated/courseSlice';
 import { gradesReducer } from './gradesRelated/gradesSlice';
+import { syllabusReducer } from './syllabusRelated/syllabusSlice';
 
 
 const store = configureStore({
@@ -25,7 +26,8 @@ const store = configureStore({
         sclass: sclassReducer,
         assignment: assignmentReducer,
         course: courseReducer,
-        grades : gradesReducer
+        grades : gradesReducer,
+        syllabus: syllabusReducer,
     },
 });
 

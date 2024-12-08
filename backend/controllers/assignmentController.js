@@ -114,6 +114,28 @@ const getAllAssignments = async (req, res) => {
         res.status(500).json({ message: 'Error fetching assignments', error });
     }
 };
+
+const submitAssignment = async (req, res) => {
+    try {
+        const { assignmentId } = req.params;
+        const { studentId } = req.body; // Assuming studentId is passed in the request body
+        const fileUrl = req.file.path; // Assuming you're using `multer` for file uploads
+
+        // Find the assignment and add the submission
+        const assignment = await Assignment.findById(assignmentId);
+        if (!assignment) {
+            return res.status(404).json({ message: 'Assignment not found' });
+        }
+
+        assignment.submissions.push({ studentId, fileUrl });
+        await assignment.save();
+
+        res.status(200).json({ message: 'File uploaded successfully', assignment });
+    } catch (error) {
+        res.status(500).json({ message: 'Error submitting assignment', error });
+    }
+};
+
 // Export the functions
 module.exports = {
     createAssignment,
@@ -121,5 +143,6 @@ module.exports = {
     getAssignment,
     deleteAssignment,
     getAllAssignments,
+    submitAssignment, // Add the new function here
     markAsDone // Add the new function here
 };

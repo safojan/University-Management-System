@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { uploadSyllabus, updateSyllabus, getSyllabusDetails } from '../../../redux/syllabusRelated/syllabusActions';
-import Popup from '../../../components/Popup';
-import { underControl } from '../../../redux/syllabusRelated/syllabusSlice';
+import { uploadSyllabus, updateSyllabus, getSyllabusDetails } from '../../redux/syllabusRelated/syllabusActions';
+import Popup from '../../components/Popup';
+import { underControl } from '../../redux/syllabusRelated/syllabusSlice';
 
 const SyllabusForm = () => {
   const { syllabusId } = useParams();
@@ -35,7 +35,7 @@ const SyllabusForm = () => {
   useEffect(() => {
     if (status === 'added' || status === 'updated') {
       dispatch(underControl());
-      navigate('/teacher/syllabi');
+      navigate('/Teacher/syllabus');  // Update this line
     } else if (status === 'failed' || status === 'error') {
       setMessage(response || 'Network Error');
       setShowPopup(true);

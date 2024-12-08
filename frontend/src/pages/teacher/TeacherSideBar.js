@@ -27,8 +27,6 @@ import { useSelector } from 'react-redux';
 
 const DarkSidebar = styled(Box)(({ theme }) => ({
 
-
-  
   backgroundColor: theme.palette.background.default,
   color: theme.palette.background.paper,
   '& .MuiListItemIcon-root': {

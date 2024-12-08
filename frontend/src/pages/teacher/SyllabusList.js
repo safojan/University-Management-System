@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getCourses as getSyllabi, deleteCourse as deleteSyllabus } from '../../redux/courseRelated/courseActions';
 import Popup from '../../components/Popup';
-import { underControl } from '../../redux/courseRelated/courseSlice';
+import { underControl } from '../../redux/syllabusRelated/syllabusSlice';
 import { Plus, Trash2, Edit } from 'lucide-react';
 
 const SyllabusList = () => {
@@ -41,7 +41,7 @@ const SyllabusList = () => {
     <Container>
       <Header>
         <h2>Syllabi</h2>
-        <AddButton onClick={() => navigate('/teacher/addsyllabus')}>
+        <AddButton onClick={() => navigate('/Teacher/syllabus/add')}>  {/* Update this line */}
           <Plus size={20} />
           Add Syllabus
         </AddButton>
@@ -59,8 +59,8 @@ const SyllabusList = () => {
                 <span>Content: {syllabus.content}</span>
               </SyllabusDetails>
               <ButtonGroup>
-                <EditButton onClick={() => navigate(`/teacher/editsyllabus/${syllabus._id}`)}>
-                  <Edit size={20} />
+              <EditButton onClick={() => navigate(`/Teacher/syllabus/edit/${syllabus._id}`)}>  {/* Update this line */}
+              <Edit size={20} />
                   Edit
                 </EditButton>
                 <DeleteButton onClick={() => deleteHandler(syllabus._id)}>

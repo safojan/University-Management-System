@@ -22,7 +22,22 @@ const assignmentSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'done'],
         default: 'pending'
-    }
+    },
+    submissions: [{
+        studentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'student',
+            required: true
+        },
+        fileUrl: {
+            type: String,
+            required: true
+        },
+        submittedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 });
 
 module.exports = mongoose.model('Assignment', assignmentSchema);
