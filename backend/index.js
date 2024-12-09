@@ -2,7 +2,6 @@ const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
-const serverless = require('serverless-http');
 // const bodyParser = require("body-parser")
 const app = express()
 const Routes = require("./routes/route.js")
@@ -68,29 +67,6 @@ app.use('/api/grading', gradingRoutes);
 
 app.use('/', Routes);
 
-let isConnected = false;
-
-const connectToDatabase = async () => {
-    if (isConnected) {
-        return;
-    }
-
-    try {
-        await mongoose.connect(process.env.MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        isConnected = true;
-        console.log("Connected to MongoDB");
-    } catch (err) {
-        console.log("MongoDB connection error:", err);
-    }
-};
-
-connectToDatabase();
-
-module.exports.handler = serverless(app);
-
-// app.listen(PORT, () => {
-//     console.log(`Server started at port no. ${PORT}`)
-// })
+app.listen(PORT, () => {
+    console.log(`Server started at port no. ${PORT}`)
+})
