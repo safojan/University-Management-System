@@ -33,6 +33,10 @@ import ParentCommunication from './ParentCommunication';
 import SyllabusForm from './SyllabusForm';
 
 
+import ViewStudent from '../admin/studentRelated/ViewStudent';
+
+import ViewCourse from './Courseview';
+
 const DarkMainContent = styled(Box)(({ theme }) => ({
   display: 'flex',
   backgroundColor: theme.palette.background.default,
@@ -164,7 +168,17 @@ const TeacherDashboard = () => {
           <Route path="/" element={<TeacherHomePage />} />
           <Route path="/Teacher/dashboard" element={<TeacherHomePage />} />
           <Route path="/Teacher/profile" element={<TeacherProfile />} />
+
+
+
           <Route path="/Teacher/courses" element={<CourseList />} />
+          <Route path="/Teacher/subjects/:classID/:subjectID" element={<ViewCourse/>} />
+          
+
+
+          <Route path="/Teacher/students/student/:id" element={<ViewStudent />} />
+
+
           <Route path="/Teacher/syllabus" element={<SyllabusList />} />
           <Route path="/Teacher/syllabus/add" element={<SyllabusForm />} />
           <Route path="/Teacher/syllabus/edit/:syllabusId" element={<SyllabusForm />} />

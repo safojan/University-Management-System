@@ -18,15 +18,28 @@ import {
     fetchCourseDetailsFailure,
 } from './courseSlice';
 
-export const getCourses = () => async (dispatch) => {
+export const getCourses = (id) => async (dispatch) => {
     dispatch(fetchCoursesRequest());
     try {
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/courses`);
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/courses/${id}`);
+        console.log("the subjects added",response.data);
         dispatch(fetchCoursesSuccess(response.data));
     } catch (error) {
         dispatch(fetchCoursesFailure(error.message));
     }
 };
+
+
+
+
+
+// not using  these function 
+
+
+
+
+
+
 
 export const createCourse = (courseData) => async (dispatch) => {
     dispatch(createCourseRequest());

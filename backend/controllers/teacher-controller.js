@@ -204,6 +204,21 @@ const teacherAttendance = async (req, res) => {
 //     }
 // };
 
+//get all the subjects from the subject collection teach by a specific teacher
+const getTeacherSubjects = async (req, res) => {
+    console.log("api called", req.params.id);
+    const teacherId = req.params.id;
+    try {
+        //get all the subjects from the subject collection teach by a specific teacher
+        let subjects = await Subject.find({ teacher: teacherId });
+        //send the subjects list
+        res.send(subjects);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
+
+
 module.exports = {
     teacherRegister,
     teacherLogIn,
@@ -214,5 +229,5 @@ module.exports = {
     deleteTeachers,
     deleteTeachersByClass,
     teacherAttendance,
-    // getAllTeacherList
+    getTeacherSubjects
 };
