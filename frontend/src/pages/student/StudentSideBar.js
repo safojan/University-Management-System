@@ -29,7 +29,7 @@ const StudentSideBar = () => {
                     <ListItemIcon>
                         <AssignmentIcon color={isActive('/Student/subjects') ? 'primary' : 'inherit'} />
                     </ListItemIcon>
-                    <ListItemText primary="Subjects" sx={{ color: isActive('/Student/subjects') ? 'primary.main' : 'inherit' }} />
+                    <ListItemText primary="Marks" sx={{ color: isActive('/Student/subjects') ? 'primary.main' : 'inherit' }} />
                 </ListItemButton>
                 <ListItemButton component={Link} to="/Student/attendance" sx={{ mb: 1 }}>
                     <ListItemIcon>
@@ -54,6 +54,18 @@ const StudentSideBar = () => {
                         <AnnouncementOutlinedIcon color={isActive('/Student/complain') ? 'primary' : 'inherit'} />
                     </ListItemIcon>
                     <ListItemText primary="Complain" sx={{ color: isActive('/Student/complain') ? 'primary.main' : 'inherit' }} />
+                </ListItemButton>
+                <ListItemButton component={Link} to="/Student/fee" sx={{ mb: 1 }}>
+                    <ListItemIcon>
+                        <AnnouncementOutlinedIcon color={isActive('/Student/fee') ? 'primary' : 'inherit'} />
+                    </ListItemIcon>
+                    <ListItemText primary="Fee" sx={{ color: isActive('/Student/fee') ? 'primary.main' : 'inherit' }} />
+                </ListItemButton>
+                <ListItemButton component={Link} to="/Student/Scholarship" sx={{ mb: 1 }}>
+                    <ListItemIcon>
+                        <AnnouncementOutlinedIcon color={isActive('/Student/Scholarship') ? 'primary' : 'inherit'} />
+                    </ListItemIcon>
+                    <ListItemText primary="Finacial Aid/Scholarship " sx={{ color: isActive('/Student/Scholarship') ? 'primary.main' : 'inherit' }} />
                 </ListItemButton>
             </React.Fragment>
             <Divider sx={{ my: 2, backgroundColor: '#444' }} />

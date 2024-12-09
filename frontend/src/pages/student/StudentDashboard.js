@@ -17,6 +17,7 @@ import CourseRegistration from './CourseRegistration';
 import StudentProfile from './StudentProfile';
 import StudentSubjects from './StudentSubjects';
 import QuizPage from './QuizPage';
+import FeeManagement from './feeManagement';
 import ViewStdAttendance from './ViewStdAttendance';
 import StudentComplain from './StudentComplain';
 import AssignmentPage from './AssignmentPage';
@@ -24,6 +25,7 @@ import MaterialList from './CourseMaterialList';
 import Logout from '../Logout'
 import AccountMenu from '../../components/AccountMenu';
 import { AppBar, Drawer } from '../../components/styles';
+import ScholarshipApplication  from'./ScholarshipApplicationForm';
 
 const StudentDashboard = () => {
     const [open, setOpen] = useState(true);
@@ -77,12 +79,14 @@ const StudentDashboard = () => {
                     <Routes>
                         <Route path="/" element={<StudentHomePage />} />
                         <Route path='*' element={<Navigate to="/" />} />
+                        <Route path="/Student/Scholarship" element={<ScholarshipApplication />} />
                         <Route path="/Student/dashboard" element={<StudentHomePage />} />
                         <Route path="/Student/profile" element={<StudentProfile />} />
                         <Route path="/Student/course-registration" element={<CourseRegistration />} />
                         <Route path="/Student/course-material" element={<MaterialList />} />
                         <Route path="/Student/assignments" element={<AssignmentPage />} />
                         <Route path="/Student/quizzes" element={<QuizPage />} />
+                        <Route path="/Student/fee" element={<FeeManagement />} />
                         <Route path="/Student/subjects" element={<StudentSubjects />} />
                         <Route path="/Student/attendance" element={<ViewStdAttendance />} />
                         <Route path="/Student/complain" element={<StudentComplain />} />

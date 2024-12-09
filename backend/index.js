@@ -10,6 +10,7 @@ const Routes = require("./routes/route.js")
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 const attendanceRoutes = require('./routes/attendanceRoutes');
+const feeRoutes = require('./routes/feeRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const gradesRoutes = require('./routes/gradesRoutes');
 const gradingRoutes = require('./routes/gradingRoutes');
@@ -22,6 +23,7 @@ const syllabusRoutes = require('./routes/syllabusRoutes');
 const communicationRoutes = require('./routes/communicationRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 const quizAssessmentRoutes = require('./routes/quizAssessmentRoutes');
+const scholarshipRoutes = require('./routes/scholarshipRoutes');
 
 
 const PORT = 3000;
@@ -48,11 +50,12 @@ mongoose.connect(process.env.MONGODB_URI)
 
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/attendance', attendanceRoutes);
-// app.use('/api/course', courseRoutes);
+app.use('/api/course', courseRoutes);
 app.use('/api/grades', gradesRoutes);
 app.use('/api/material', materialRoutes);
 app.use('/api/performance', performanceRoutes);
 app.use('/api/progressReports', progressReportRoutes);
+app.use('/api/fee', feeRoutes);
 app.use('/api/report', reportRoutes);
 app.use('/api/schedule', scheduleRoutes);
 app.use('/api/syllabus', syllabusRoutes);
@@ -65,9 +68,29 @@ app.use('/api/grading', gradingRoutes);
 
 app.use('/', Routes);
 
+let isConnected = false;
 
-// module.exports = serverless(app);
+const connectToDatabase = async () => {
+    if (isConnected) {
+        return;
+    }
 
-app.listen(PORT, () => {
-    console.log(`Server started at port no. ${PORT}`)
-})
+    try {
+        await mongoose.connect(process.env.MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        isConnected = true;
+        console.log("Connected to MongoDB");
+    } catch (err) {
+        console.log("MongoDB connection error:", err);
+    }
+};
+
+connectToDatabase();
+
+module.exports.handler = serverless(app);
+
+// app.listen(PORT, () => {
+//     console.log(`Server started at port no. ${PORT}`)
+// })
