@@ -40,11 +40,6 @@ app.use((req, res, next) => {
 });
 
 
-
-
-
-
-
 // app.use(bodyParser.json({ limit: '10mb', extended: true }))
 // app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
@@ -66,7 +61,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .catch((err) => console.log("NOT CONNECTED TO NETWORK", err))
 
 
-app.use('/', Routes);
+
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/course', courseRoutes);
@@ -84,7 +79,9 @@ app.use('/api/quiz', quizRoutes);
 app.use('/api/quizAssessment', quizAssessmentRoutes);
 app.use('/api/grading', gradingRoutes);
 
-// Database Connection 
+
+app.use('/', Routes);
+
 let isConnected = false;
 
 const connectToDatabase = async () => {

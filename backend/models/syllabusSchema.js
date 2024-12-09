@@ -9,6 +9,14 @@ const syllabusSchema = new mongoose.Schema({
     content: {
         type: String,
         required: true
+    },
+    expectedCompletionDate: {
+        type: Date,
+        required: true
+    },
+    isContentComplete: {
+        type: Boolean,
+        default: false
     }
 });
 

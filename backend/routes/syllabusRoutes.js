@@ -1,17 +1,26 @@
 const express = require('express');
-const { uploadSyllabus, updateSyllabus, getSyllabus, deleteSyllabus } = require('../controllers/syllabusController.js');
+const {
+  getAllSyllabi,
+  getSyllabusById,
+  createSyllabus,
+  updateSyllabus,
+  deleteSyllabus,
+} = require('../controllers/syllabusController');
 const router = express.Router();
 
-// Route to upload a new syllabus
-router.post('/uploadSyllabus', uploadSyllabus);
+// Route to fetch all syllabi, sorted by date
+router.get('/', getAllSyllabi);
 
-// Route to update an existing syllabus
-router.put('/updateSyllabus/:syllabusId', updateSyllabus);
+// Route to fetch a specific syllabus by ID
+// router.get('/:id', getSyllabusById);
 
-// Route to get a syllabus by ID
-router.get('/getSyllabus/:syllabusId', getSyllabus);
+// Route to create a new syllabus
+router.post('/', createSyllabus);
+
+// Route to update a syllabus by ID
+// router.put('/:id', updateSyllabus);
 
 // Route to delete a syllabus by ID
-router.delete('/deleteSyllabus/:syllabusId', deleteSyllabus);
+ router.delete('/:id', deleteSyllabus);
 
 module.exports = router;
