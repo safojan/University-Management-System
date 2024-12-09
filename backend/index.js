@@ -2,11 +2,11 @@ const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
-<<<<<<< HEAD
+// <<<<<<< HEAD
 
-=======
-const serverless = require('serverless-http');
->>>>>>> a4d0f99f0b1d43a8b7f1f9c3d5c92472e83c2037
+// =======
+// const serverless = require('serverless-http');
+// >>>>>>> a4d0f99f0b1d43a8b7f1f9c3d5c92472e83c2037
 // const bodyParser = require("body-parser")
 const app = express()
 const Routes = require("./routes/route.js")
