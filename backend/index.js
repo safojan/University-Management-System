@@ -105,6 +105,6 @@ connectToDatabase();
 
 module.exports.handler = serverless(app);
 
-// app.listen(PORT, () => {
-//     console.log(`Server started at port no. ${PORT}`)
-// })
+app.listen(PORT, () => {
+    console.log(`Server started at port no. ${PORT}`)
+})
