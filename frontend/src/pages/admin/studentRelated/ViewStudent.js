@@ -274,36 +274,53 @@ const ViewStudent = () => {
 
     const StudentMarksSection = () => {
         const renderTableSection = () => {
-            return role != "teacher" ? <StudentExamMarksTeacher/> : (
+            const renderTeacherView = () => {
+                return <StudentExamMarksTeacher />;
+            };
+            const renderStudentView = () => {
+                return (
+                    <>
+                        <h3>Subject Marks:</h3>
+                        <Table>
+                            <TableHead>
+                                <StyledTableRow>
+                                    <StyledTableCell>Subject</StyledTableCell>
+                                    <StyledTableCell>Marks</StyledTableCell>
+                                </StyledTableRow>
+                            </TableHead>
+                            <TableBody>
+                                {subjectMarks.map((result, index) => {
+                                    if (!result.subName || !result.marksObtained) {
+                                        return null;
+                                    }
+                                    return (
+                                        <StyledTableRow key={index}>
+                                            <StyledTableCell>{result.subName.subName}</StyledTableCell>
+                                            <StyledTableCell>{result.marksObtained}</StyledTableCell>
+                                        </StyledTableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+        
+                        <Button
+                            variant="contained"
+                            sx={styles.styledButton}
+                            onClick={() => navigate(`/Admin/students/student/marks/${studentID}`)}
+                        >
+                            Add Marks
+                        </Button>
+                    </>
+                );
+            }
+
+            return (
                 <>
-                    <h3>Subject Marks:</h3>
-                    <Table>
-                        <TableHead>
-                            <StyledTableRow>
-                                <StyledTableCell>Subject</StyledTableCell>
-                                <StyledTableCell>Marks</StyledTableCell>
-                            </StyledTableRow>
-                        </TableHead>
-                        <TableBody>
-                            {subjectMarks.map((result, index) => {
-                                if (!result.subName || !result.marksObtained) {
-                                    return null;
-                                }
-                                return (
-                                    <StyledTableRow key={index}>
-                                        <StyledTableCell>{result.subName.subName}</StyledTableCell>
-                                        <StyledTableCell>{result.marksObtained}</StyledTableCell>
-                                    </StyledTableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
-                   
-                    <Button variant="contained" sx={styles.styledButton} onClick={() => navigate("/Admin/students/student/marks/" + studentID)}>
-                        Add Marks
-                    </Button>
+                    {role === "Teacher" ? renderTeacherView() : renderStudentView()}
                 </>
             );
+        
+
         };
 
         const renderChartSection = () => {

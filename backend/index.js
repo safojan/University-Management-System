@@ -45,10 +45,7 @@ app.use((req, res, next) => {
 
 app.use(express.json({ limit: '10mb' }))
 // new code
-app.use(cors({
-  origin: 'https://university-management-system-frontend.vercel.app/', // Replace with your Vercel frontend URL
-  credentials: true,
-}));
+app.use(cors());
 
 // Logging middleware
 app.use((req, res, next) => {
@@ -103,7 +100,7 @@ const connectToDatabase = async () => {
 
 connectToDatabase();
 
-module.exports.handler = serverless(app);
+// module.exports.handler = serverless(app);
 
 app.listen(PORT, () => {
     console.log(`Server started at port no. ${PORT}`)
