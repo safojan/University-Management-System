@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
+const serverless = require('serverless-http');
 // const bodyParser = require("body-parser")
 const app = express()
 const Routes = require("./routes/route.js")
@@ -33,16 +34,21 @@ app.use((req, res, next) => {
 });
 
 
-
-
-
-
-
 // app.use(bodyParser.json({ limit: '10mb', extended: true }))
 // app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
 app.use(express.json({ limit: '10mb' }))
-app.use(cors())
+// new code
+app.use(cors({
+  origin: 'https://university-management-system-frontend.vercel.app/', // Replace with your Vercel frontend URL
+  credentials: true,
+}));
+
+// Logging middleware
+app.use((req, res, next) => {
+  console.log({ method: req.method, path: req.url });
+  next();
+});
 
 mongoose.connect(process.env.MONGODB_URI)
     .then(console.log("Connected to MongoDB"))
@@ -66,9 +72,32 @@ app.use('/api/quiz', quizRoutes);
 app.use('/api/quizAssessment', quizAssessmentRoutes);
 app.use('/api/grading', gradingRoutes);
 
+
 app.use('/', Routes);
 
+let isConnected = false;
 
-app.listen(PORT, () => {
-    console.log(`Server started at port no. ${PORT}`)
-})
+const connectToDatabase = async () => {
+    if (isConnected) {
+        return;
+    }
+
+    try {
+        await mongoose.connect(process.env.MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        isConnected = true;
+        console.log("Connected to MongoDB");
+    } catch (err) {
+        console.log("MongoDB connection error:", err);
+    }
+};
+
+connectToDatabase();
+
+module.exports.handler = serverless(app);
+
+// app.listen(PORT, () => {
+//     console.log(`Server started at port no. ${PORT}`)
+// })
