@@ -2,11 +2,6 @@ const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
-// <<<<<<< HEAD
-
-// =======
-// const serverless = require('serverless-http');
-// >>>>>>> a4d0f99f0b1d43a8b7f1f9c3d5c92472e83c2037
 // const bodyParser = require("body-parser")
 const app = express()
 const Routes = require("./routes/route.js")
@@ -44,14 +39,9 @@ app.use((req, res, next) => {
 // app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
 app.use(express.json({ limit: '10mb' }))
-// new code
 app.use(cors());
 
-// Logging middleware
-app.use((req, res, next) => {
-  console.log({ method: req.method, path: req.url });
-  next();
-});
+
 
 mongoose.connect(process.env.MONGODB_URI)
     .then(console.log("Connected to MongoDB"))
