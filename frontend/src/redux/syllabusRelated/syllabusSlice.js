@@ -1,4 +1,3 @@
-// frontend/src/redux/syllabusRelated/syllabusSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -37,44 +36,44 @@ const syllabusSlice = createSlice({
       state.response = null;
     },
     getSyllabusDetailsRequest: (state) => {
-        state.loading = true;
-      },
-      getSyllabusDetailsSuccess: (state, action) => {
-        state.loading = false;
-        state.syllabusDetails = action.payload;
-        state.error = null;
-      },
-      getSyllabusDetailsFailed: (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      },
-      uploadSyllabusRequest: (state) => {
-        state.loading = true;
-      },
-      uploadSyllabusSuccess: (state, action) => {
-        state.loading = false;
-        state.status = 'added';
-        state.syllabi.push(action.payload);
-      },
-      uploadSyllabusFailed: (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      },
-      updateSyllabusRequest: (state) => {
-        state.loading = true;
-      },
-      updateSyllabusSuccess: (state, action) => {
-        state.loading = false;
-        state.status = 'updated';
-        const index = state.syllabi.findIndex(s => s._id === action.payload._id);
-        if (index !== -1) {
-          state.syllabi[index] = action.payload;
-        }
-      },
-      updateSyllabusFailed: (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+      state.loading = true;
+    },
+    getSyllabusDetailsSuccess: (state, action) => {
+      state.loading = false;
+      state.syllabusDetails = action.payload;
+      state.error = null;
+    },
+    getSyllabusDetailsFailed: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    uploadSyllabusRequest: (state) => {
+      state.loading = true;
+    },
+    uploadSyllabusSuccess: (state, action) => {
+      state.loading = false;
+      state.status = 'added';
+      state.syllabi.push(action.payload);
+    },
+    uploadSyllabusFailed: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    updateSyllabusRequest: (state) => {
+      state.loading = true;
+    },
+    updateSyllabusSuccess: (state, action) => {
+      state.loading = false;
+      state.status = 'updated';
+      const index = state.syllabi.findIndex(s => s._id === action.payload._id);
+      if (index !== -1) {
+        state.syllabi[index] = action.payload;
       }
+    },
+    updateSyllabusFailed: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    }
   }
 });
 
@@ -95,4 +94,4 @@ export const {
   updateSyllabusFailed
 } = syllabusSlice.actions;
 
-export const syllabusReducer = syllabusSlice.reducer; 
+export const syllabusReducer = syllabusSlice.reducer;

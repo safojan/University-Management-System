@@ -49,7 +49,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .catch((err) => console.log("NOT CONNECTED TO NETWORK", err))
 
 
-app.use('/', Routes);
+
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/attendance', attendanceRoutes);
 // app.use('/api/course', courseRoutes);
@@ -65,6 +65,8 @@ app.use('/api/communication', communicationRoutes);
 app.use('/api/quiz', quizRoutes);
 app.use('/api/quizAssessment', quizAssessmentRoutes);
 app.use('/api/grading', gradingRoutes);
+
+app.use('/', Routes);
 
 
 app.listen(PORT, () => {

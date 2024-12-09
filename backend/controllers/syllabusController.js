@@ -1,96 +1,128 @@
-const Syllabus = require('../models/syllabusSchema.js'); // Assuming you have a Syllabus model
+const mongoose = require('mongoose');
+const Syllabus = require('../models/syllabusSchema');
 
-
-// Function to upload a new syllabus
-const uploadSyllabus = async (req, res) => {
-    try {
-        const { courseId, content } = req.body;
-
-        // Validate input
-        if (!courseId || !content) {
-            console.error('Missing courseId or content in request body');
-            return res.status(400).json({ message: 'Course ID and Content are required' });
-        }
-
-        // Create a new syllabus
-        const newSyllabus = new Syllabus({
-            courseId,
-            content
-        });
-
-        // Save the syllabus to the database
-        const savedSyllabus = await newSyllabus.save();
-        console.log('Syllabus uploaded successfully:', savedSyllabus);
-        res.status(201).json(savedSyllabus);
-    } catch (error) {
-        console.error('Error uploading syllabus:', error);
-        res.status(500).json({ message: 'Error uploading syllabus', error });
-    }
+// @desc    Get all syllabi sorted by expectedCompletionDate
+// @route   GET /api/syllabus
+const getAllSyllabi = async (req, res) => {
+  try {
+    const syllabi = await Syllabus.find().sort({ expectedCompletionDate: 1 });
+    res.status(200).json(syllabi);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch syllabi', error });
+  }
 };
 
-// Function to update an existing syllabus
+// @desc    Get a specific syllabus by ID
+// @route   GET /api/syllabus/:id
+const getSyllabusById = async (req, res) => {
+  const { id } = req.params;
+
+  // Validate ObjectId
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ message: 'Invalid syllabus ID format' });
+  }
+
+  try {
+    const syllabus = await Syllabus.findById(id).populate('courseId');
+    if (!syllabus) {
+      return res.status(404).json({ message: 'Syllabus not found' });
+    }
+    res.status(200).json(syllabus);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch syllabus', error });
+  }
+};
+
+// @desc    Create a new syllabus
+// @route   POST /api/syllabus
+const createSyllabus = async (req, res) => {
+  const { courseId, content, expectedCompletionDate, isContentComplete } = req.body;
+
+  console.log(expectedCompletionDate);
+
+  // Validate input
+  if (!courseId || !content || !expectedCompletionDate) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  if (!mongoose.isValidObjectId(courseId)) {
+    return res.status(400).json({ message: 'Invalid course ID format' });
+  }
+
+  try {
+    const newSyllabus = new Syllabus({
+      courseId,
+      content,
+      expectedCompletionDate,
+      isContentComplete: isContentComplete || false,
+    });
+    const savedSyllabus = await newSyllabus.save();
+    res.status(201).json(savedSyllabus);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to create syllabus', error });
+  }
+};
+
+// @desc    Update a syllabus by ID
+// @route   PUT /api/syllabus/:id
 const updateSyllabus = async (req, res) => {
-    try {
-        const { syllabusId } = req.params;
-        const { content } = req.body;
+  const { id } = req.params;
+  const { courseId, content, expectedCompletionDate, isContentComplete } = req.body;
 
-        // Find the syllabus by ID and update it
-        const updatedSyllabus = await Syllabus.findByIdAndUpdate(
-            syllabusId,
-            { content },
-            { new: true }
-        );
+    
 
-        if (!updatedSyllabus) {
-            return res.status(404).json({ message: 'Syllabus not found' });
-        }
+  // Validate ObjectId
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ message: 'Invalid syllabus ID format' });
+  }
 
-        res.status(200).json(updatedSyllabus);
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating syllabus', error });
+  if (courseId && !mongoose.isValidObjectId(courseId)) {
+    return res.status(400).json({ message: 'Invalid course ID format' });
+  }
+
+  try {
+    const updatedSyllabus = await Syllabus.findByIdAndUpdate(
+      id,
+      { courseId, content, expectedCompletionDate, isContentComplete },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedSyllabus) {
+      return res.status(404).json({ message: 'Syllabus not found' });
     }
+
+    res.status(200).json(updatedSyllabus);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update syllabus', error });
+  }
 };
 
-// Function to get a syllabus by ID
-const getSyllabus = async (req, res) => {
-    try {
-        const { syllabusId } = req.params;
-
-        // Find the syllabus by ID
-        const syllabus = await Syllabus.findById(syllabusId);
-
-        if (!syllabus) {
-            return res.status(404).json({ message: 'Syllabus not found' });
-        }
-
-        res.status(200).json(syllabus);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching syllabus', error });
-    }
-};
-
-// Function to delete a syllabus by ID
+// @desc    Delete a syllabus by ID
+// @route   DELETE /api/syllabus/:id
 const deleteSyllabus = async (req, res) => {
-    try {
-        const { syllabusId } = req.params;
+  const { id } = req.params;
 
-        // Find the syllabus by ID and delete it
-        const deletedSyllabus = await Syllabus.findByIdAndDelete(syllabusId);
+  // Validate ObjectId
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ message: 'Invalid syllabus ID format' });
+  }
 
-        if (!deletedSyllabus) {
-            return res.status(404).json({ message: 'Syllabus not found' });
-        }
-
-        res.status(200).json({ message: 'Syllabus deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting syllabus', error });
+  try {
+    const deletedSyllabus = await Syllabus.findByIdAndDelete(id);
+    if (!deletedSyllabus) {
+      return res.status(404).json({ message: 'Syllabus not found' });
     }
+
+    res.status(200).json({ message: 'Syllabus deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete syllabus', error });
+  }
 };
 
-// Export the functions
 module.exports = {
-    uploadSyllabus,
-    updateSyllabus,
-    getSyllabus,
-    deleteSyllabus
+  getAllSyllabi,
+  getSyllabusById,
+  createSyllabus,
+  updateSyllabus,
+  deleteSyllabus,
 };

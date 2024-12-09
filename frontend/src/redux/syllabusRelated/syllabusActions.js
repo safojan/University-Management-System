@@ -1,4 +1,3 @@
-// frontend/src/redux/syllabusRelated/syllabusActions.js
 import axios from 'axios';
 import {
   getSyllabusRequest,
@@ -16,51 +15,14 @@ import {
   updateSyllabusFailed
 } from './syllabusSlice';
 
-// Configure axios instance
-const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL || 'http://localhost:3000',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  validateStatus: status => status >= 200 && status < 300
-});
-
-// Request interceptor
-axiosInstance.interceptors.request.use(
-  config => {
-    console.log('API Request:', {
-      method: config.method,
-      url: config.url,
-      data: config.data
-    });
-    return config;
-  },
-  error => {
-    console.error('Request Error:', error);
-    return Promise.reject(error);
-  }
-);
-
-// Response interceptor
-axiosInstance.interceptors.response.use(
-  response => response,
-  error => {
-    console.error('API Error:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      url: error.config?.url
-    });
-    const errorMessage = error.response?.data?.message || error.message || 'An unexpected error occurred';
-    return Promise.reject(new Error(errorMessage));
-  }
-);
+// Base URL for API
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 // Fetch all syllabi
 export const getSyllabi = () => async (dispatch) => {
   dispatch(getSyllabusRequest());
   try {
-    const response = await axiosInstance.get('/api/syllabus/getSyllabus');
+    const response = await axios.get(`${baseURL}/api/syllabus/`);
     dispatch(getSyllabusSuccess(response.data));
     return response.data;
   } catch (error) {
@@ -74,7 +36,7 @@ export const getSyllabusDetails = (id) => async (dispatch) => {
   dispatch(getSyllabusDetailsRequest());
   try {
     if (!id) throw new Error('Syllabus ID is required');
-    const response = await axiosInstance.get(`/api/syllabus/getSyllabus/${id}`);
+    const response = await axios.get(`${baseURL}/api/syllabus/getSyllabus/${id}`);
     dispatch(getSyllabusDetailsSuccess(response.data));
     return response.data;
   } catch (error) {
@@ -90,16 +52,17 @@ export const uploadSyllabus = (syllabusData) => async (dispatch) => {
     // Validate input
     if (!syllabusData?.courseId) throw new Error('Course ID is required');
     if (!syllabusData?.content) throw new Error('Content is required');
+    if (!syllabusData?.expectedCompletionDate) throw new Error('Expected Completion Date is required');
+
+    console.log(syllabusData)
 
     const payload = {
       courseId: syllabusData.courseId,
-      content: syllabusData.content
+      content: syllabusData.content,
+      expectedCompletionDate: syllabusData.expectedCompletionDate,
     };
 
-    console.log('Uploading syllabus with data:', payload);
-
-    const response = await axiosInstance.post('/api/syllabus/uploadSyllabus', payload);
-
+    const response = await axios.post(`${baseURL}/api/syllabus/`, payload);
     dispatch(uploadSyllabusSuccess(response.data));
     return response.data;
   } catch (error) {
@@ -115,7 +78,7 @@ export const updateSyllabus = (id, syllabusData) => async (dispatch) => {
     if (!id) throw new Error('Syllabus ID is required');
     if (!syllabusData?.content) throw new Error('Content is required');
 
-    const response = await axiosInstance.put(`/api/syllabus/updateSyllabus/${id}`, syllabusData);
+    const response = await axios.put(`${baseURL}/api/syllabus/updateSyllabus/${id}`, syllabusData);
     dispatch(updateSyllabusSuccess(response.data));
     return response.data;
   } catch (error) {
@@ -129,7 +92,7 @@ export const deleteSyllabus = (id) => async (dispatch) => {
   dispatch(getSyllabusRequest());
   try {
     if (!id) throw new Error('Syllabus ID is required');
-    await axiosInstance.delete(`/api/syllabus/deleteSyllabus/${id}`);
+    await axios.delete(`${baseURL}/api/syllabus/${id}`);
     dispatch(deleteSyllabusSuccess(id));
   } catch (error) {
     dispatch(getSyllabusFailed(error.message));
