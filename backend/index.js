@@ -23,6 +23,7 @@ const syllabusRoutes = require('./routes/syllabusRoutes');
 const communicationRoutes = require('./routes/communicationRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 const quizAssessmentRoutes = require('./routes/quizAssessmentRoutes');
+const scholarshipRoutes = require('./routes/scholarshipRoutes');
 
 
 const PORT = 3000;
@@ -54,7 +55,7 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/', Routes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/attendance', attendanceRoutes);
-// app.use('/api/course', courseRoutes);
+app.use('/api/course', courseRoutes);
 app.use('/api/grades', gradesRoutes);
 app.use('/api/material', materialRoutes);
 app.use('/api/performance', performanceRoutes);

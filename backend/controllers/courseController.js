@@ -102,7 +102,6 @@ const enrollCourse = async (req, res) => {
     }
 };
 
-// Delete a student from a course
 const deleteCourse = async (req, res) => {
     const { subCode, rollNum } = req.body;
 
@@ -110,23 +109,34 @@ const deleteCourse = async (req, res) => {
         // Debugging logs
         console.log("Attempting to delete:", { subCode, rollNum });
 
-        // Find the student
+        // Find the student by roll number
         const student = await Student.findOne({ rollNum });
         if (!student) {
             return res.status(404).json({ message: 'Student not found' });
         }
 
-        // Remove course from student's enrolled courses
-        const course = student.registeredCourses.filter(course => course.subCode !== subCode);
-        
-        // Check if the student is enrolled in the course
-        if (!student.registeredCourses.includes(course._id)) {
+        // Find the subject by subCode
+        const subject = await Subject.findOne({ subCode });
+        if (!subject) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+
+        // Check if the student is enrolled in the course by comparing the ObjectId
+        const courseIndex = student.registeredCourses.findIndex(course => course.toString() === subject._id.toString());
+
+        if (courseIndex === -1) {
             return res.status(400).json({ message: 'Student is not enrolled in this course' });
         }
 
-        student.registeredCourses = updatedCourses;
-        await student.save();
+        // Remove the course from student's registered courses
+        student.registeredCourses.splice(courseIndex, 1);
 
+        // Remove student from the subject's enrolledStudents array
+        subject.enrolledStudents = subject.enrolledStudents.filter(studentId => studentId.toString() !== student._id.toString());
+
+        // Save the updated student and subject records
+        await student.save();
+        await subject.save();
 
         res.status(200).json({ message: 'Course successfully removed' });
     } catch (error) {

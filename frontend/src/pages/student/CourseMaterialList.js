@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Download } from 'lucide-react';
 import Popup from '../../components/Popup';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';  // Import useSelector to get the current student's data
 
 const MaterialList = () => {
-    const [rollNum, setRollNum] = useState('');
+    // Get the current user's data from the Redux store (assumes student info is in state.user.currentUser)
+    const { currentUser } = useSelector((state) => state.user);
+    const [rollNum, setRollNum] = useState(currentUser ? currentUser.rollNum : '');  // Set rollNum from currentUser
     const [courseMaterials, setCourseMaterials] = useState([]);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
@@ -27,6 +30,12 @@ const MaterialList = () => {
             });
     };
 
+    useEffect(() => {
+        if (rollNum) {
+            fetchMaterials();
+        }
+    }, [rollNum]);  // Re-run fetchMaterials when rollNum changes
+
     return (
         <Container>
             <Card
@@ -36,23 +45,14 @@ const MaterialList = () => {
                 transition={{ type: 'spring', duration: 0.5 }}
             >
                 <Form>
-                    <Label>Enter Roll Number:</Label>
+                    <Label>Roll Number:</Label>
                     <Input
                         type="text"
                         value={rollNum}
                         onChange={(e) => setRollNum(e.target.value)}
                         placeholder="Student Roll Number"
+                        disabled  // Disable input field to prevent manual editing
                     />
-                    <ButtonContainer>
-                        <FetchButton
-                            onClick={fetchMaterials}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.98 }}
-                            disabled={loading}
-                        >
-                            {loading ? 'Loading...' : 'Fetch Materials'}
-                        </FetchButton>
-                    </ButtonContainer>
                 </Form>
             </Card>
 
@@ -167,25 +167,7 @@ const ButtonContainer = styled.div`
     margin-top: 2rem;
 `;
 
-const FetchButton = styled(motion.button)`
-    padding: 0.75rem 1.5rem;
-    background-color: #F08080;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 
-    &:hover {
-        background-color: #F08080CC;
-    }
-
-    &:disabled {
-        background-color: #F08080AA;
-        cursor: not-allowed;
-    }
-`;
 
 // Updated Quiz Button styled component
 const QuizButton = styled(motion.button)`

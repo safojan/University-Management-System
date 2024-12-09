@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Plus, ArrowLeft, Trash } from 'lucide-react';
 import Popup from "../../components/Popup";
-import { useCallback } from 'react';
-
+import { useSelector } from 'react-redux';  // Import useSelector
 
 const CourseRegistration = () => {
-    const [studentId, setStudentId] = useState('');
+    // Get the current user's data from the Redux store (assumes student info is in state.user.currentUser)
+    const { currentUser } = useSelector((state) => state.user);
+    const [studentId, setStudentId] = useState(currentUser ? currentUser.rollNum : '');  // Set studentId from currentUser
     const [courseCode, setCourseCode] = useState('');
     const [loader, setLoader] = useState(false);
     const [message, setMessage] = useState('');
@@ -18,8 +19,8 @@ const CourseRegistration = () => {
 
     const navigate = useNavigate();
 
-    // Memoize the fetchEnrolledCourses function
     const fetchEnrolledCourses = useCallback(async () => {
+        if (!studentId) return;  // Only fetch courses if studentId is available
         try {
             const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/course/courses/${studentId}`);
             setEnrolledCourses(response.data.courses || []);
@@ -27,14 +28,11 @@ const CourseRegistration = () => {
             setMessage('Error fetching enrolled courses');
             setShowPopup(true);
         }
-    }, [studentId]);  // Only recreate when studentId changes
-    
-    // Then use it inside the useEffect
+    }, [studentId]);
+
     useEffect(() => {
-        if (studentId) {
-            fetchEnrolledCourses();
-        }
-    }, [studentId, fetchEnrolledCourses]);  // fetchEnrolledCourses is now stable
+        fetchEnrolledCourses();
+    }, [studentId, fetchEnrolledCourses]);
 
     const handleEnroll = async (e) => {
         e.preventDefault();
@@ -75,7 +73,6 @@ const CourseRegistration = () => {
             setShowPopup(true);
         }
     };
-    
 
     return (
         <Container>
@@ -86,13 +83,6 @@ const CourseRegistration = () => {
                 transition={{ type: 'spring', duration: 0.5 }}
             >
                 <Form onSubmit={handleEnroll}>
-                    <Input
-                        type="text"
-                        placeholder="Student ID"
-                        value={studentId}
-                        onChange={(e) => setStudentId(e.target.value)}
-                        required
-                    />
                     <Input
                         type="text"
                         placeholder="Course Code"
@@ -130,6 +120,10 @@ const CourseRegistration = () => {
 
             {/* Display enrolled courses */}
             {studentId && enrolledCourses.length > 0 && (
+                <div>
+                    <h2>Enrolled Courses</h2>
+                    <p>Total Courses: {enrolledCourses.length}</p>
+                    <hr />
                 <Grid>
                     {enrolledCourses.map((course) => (
                         <CourseCard key={course._id}>
@@ -144,6 +138,7 @@ const CourseRegistration = () => {
                         </CourseCard>
                     ))}
                 </Grid>
+                </div>
             )}
 
             <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />

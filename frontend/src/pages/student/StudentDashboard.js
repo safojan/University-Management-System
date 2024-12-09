@@ -25,6 +25,7 @@ import MaterialList from './CourseMaterialList';
 import Logout from '../Logout'
 import AccountMenu from '../../components/AccountMenu';
 import { AppBar, Drawer } from '../../components/styles';
+import ScholarshipApplication  from'./ScholarshipApplicationForm';
 
 const StudentDashboard = () => {
     const [open, setOpen] = useState(true);
@@ -78,6 +79,7 @@ const StudentDashboard = () => {
                     <Routes>
                         <Route path="/" element={<StudentHomePage />} />
                         <Route path='*' element={<Navigate to="/" />} />
+                        <Route path="/Student/Scholarship" element={<ScholarshipApplication />} />
                         <Route path="/Student/dashboard" element={<StudentHomePage />} />
                         <Route path="/Student/profile" element={<StudentProfile />} />
                         <Route path="/Student/course-registration" element={<CourseRegistration />} />

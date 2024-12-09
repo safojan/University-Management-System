@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Download } from 'lucide-react';
 import Popup from '../../components/Popup';
 import StripeCheckout from 'react-stripe-checkout';
+import { useSelector } from 'react-redux';  // Import useSelector to access Redux store
 
 const FeeManagement = () => {
-    const [rollNum, setRollNum] = useState('');
+    // Get the current user's data from the Redux store (assumes student info is in state.user.currentUser)
+    const { currentUser } = useSelector((state) => state.user);
+    const [rollNum, setRollNum] = useState(currentUser ? currentUser.rollNum : '');  // Set rollNum from currentUser
     const [feeDetails, setFeeDetails] = useState(null);
     const [paymentHistory, setPaymentHistory] = useState([]);
     const [amount, setAmount] = useState('');
@@ -88,13 +91,6 @@ const FeeManagement = () => {
         <Container>
             <Card>
                 <Form>
-                    <Label>Enter Roll Number:</Label>
-                    <Input
-                        type="text"
-                        value={rollNum}
-                        onChange={(e) => setRollNum(e.target.value)}
-                        placeholder="Student Roll Number"
-                    />
                     <Button
                         onClick={fetchFeeDetails}
                         disabled={loading}
@@ -176,6 +172,7 @@ const FeeManagement = () => {
 
 export default FeeManagement;
 
+
 // Styled Components
 const Container = styled.div`
     display: flex;
@@ -232,7 +229,7 @@ const Select = styled.select`
 
 const Button = styled(motion.button)`
     padding: 0.75rem 1.5rem;
-    background-color: #f39c12;
+    background-color: #F08080;
     color: white;
     border: none;
     border-radius: 5px;
@@ -279,5 +276,3 @@ const PopupMessage = styled.div`
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     font-size: 1rem;
 `;
-
-
