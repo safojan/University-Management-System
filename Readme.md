@@ -154,6 +154,8 @@ cd University-management-system
 - **react-redux**: Official React bindings for Redux.
 - **@mui/material**: Material Design components for React.
 - **axios**: Promise-based HTTP client for the browser and Node.js.
+-**framer-motion**- : For Animations .
+-**react-lucid**- : for charts .
 
 ## License
 
